@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keenan Gan — CV</title>
+<meta name="description" content="Keenan Gan — operator and builder. Runs an entire business on a fleet of Claude Code agents he built; ex-Sleek (banking-as-a-service), ex-Accenture. Applying to found Anthropic's APAC Product Support function in Singapore.">
+<style>
+  :root{
+    --bg:#faf8f5; --ink:#1b1916; --muted:#6c6760; --line:#e8e3db; --card:#ffffff;
+    --accent:#bd4b2c; --accent-deep:#9a3b20; --accent-soft:#f7e9e3;
+    --auto:#0a6b54; --auto-soft:#e4f1ec; --ink2:#3c3833;
+    --maxw:880px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased; font-size:16px}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px}
+  a{color:var(--accent-deep)}
+
+  nav{position:sticky; top:0; z-index:10; background:rgba(250,248,245,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:58px}
+  .brand{font-weight:800; letter-spacing:-.4px; font-size:18px; color:var(--ink); text-decoration:none}
+  .brand .d{color:var(--accent)}
+  nav ul{display:flex; gap:18px; list-style:none; margin:0; padding:0; font-size:14.5px; align-items:center}
+  nav a{color:var(--muted); text-decoration:none}
+  nav a:hover{color:var(--ink)}
+  nav a.print{border:1px solid #d8d2c8; color:var(--ink); padding:6px 13px; border-radius:8px; font-weight:600; cursor:pointer}
+  @media(max-width:680px){ nav ul li.hidem{display:none} }
+
+  /* header */
+  header.cv{padding:46px 0 8px}
+  .name{font-size:38px; line-height:1.06; letter-spacing:-1.1px; margin:0; font-weight:800}
+  .name .d{color:var(--accent)}
+  .role{font-size:17px; color:var(--accent-deep); font-weight:700; margin:10px 0 0; letter-spacing:-.2px}
+  .tag{font-size:16.5px; color:var(--ink2); max-width:680px; margin:12px 0 0}
+  .tag b{color:var(--ink)}
+  .meta{display:flex; flex-wrap:wrap; gap:7px 16px; margin-top:16px; font-size:14px; color:var(--muted)}
+  .meta a{color:var(--ink2); text-decoration:none; border-bottom:1px solid var(--line)}
+  .meta .cit{color:var(--auto); font-weight:700}
+
+  /* stat strip */
+  .stats{display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:13px; overflow:hidden; margin:26px 0 0}
+  @media(max-width:680px){ .stats{grid-template-columns:repeat(2,1fr)} }
+  .stat{background:var(--card); padding:14px 14px}
+  .stat .n{font-size:19px; font-weight:800; letter-spacing:-.5px; color:var(--ink)}
+  .stat .n .u{color:var(--accent)}
+  .stat .l{font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.3}
+
+  section{padding:30px 0 4px}
+  .kicker{font-size:12.5px; text-transform:uppercase; letter-spacing:1.5px; color:var(--accent); font-weight:700; margin:0 0 14px; padding-bottom:7px; border-bottom:1px solid var(--line)}
+  .summary{font-size:16.5px; color:var(--ink2); max-width:720px}
+  .summary b{color:var(--ink)}
+
+  /* experience */
+  .job{margin:0 0 22px}
+  .job .top{display:flex; justify-content:space-between; align-items:baseline; gap:14px; flex-wrap:wrap}
+  .job h3{margin:0; font-size:18px; letter-spacing:-.3px}
+  .job h3 .co{color:var(--ink)}
+  .job .where{font-size:14px; color:var(--muted); font-weight:600}
+  .job .period{font-size:13px; color:var(--muted); font-weight:600; white-space:nowrap}
+  .job .sub{font-size:14.5px; color:var(--ink2); margin:5px 0 8px; font-style:italic}
+  .job ul{margin:6px 0 0; padding-left:18px}
+  .job li{font-size:14.5px; color:var(--ink2); margin:5px 0; line-height:1.5}
+  .job li b{color:var(--ink)}
+  .earlier{font-size:14px; color:var(--ink2); line-height:1.8}
+  .earlier b{color:var(--ink)}
+
+  /* lower grid */
+  .grid{display:grid; grid-template-columns:1.25fr 1fr; gap:26px}
+  @media(max-width:680px){ .grid{grid-template-columns:1fr; gap:8px} }
+  .skill{margin:0 0 14px}
+  .skill .h{font-size:13.5px; font-weight:800; color:var(--ink); margin:0 0 7px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px}
+  .chip{font-size:12.5px; background:var(--card); border:1px solid var(--line); color:var(--ink2); padding:4px 10px; border-radius:7px}
+  .meta-block{margin:0 0 16px}
+  .meta-block .h{font-size:13.5px; font-weight:800; color:var(--ink); margin:0 0 7px}
+  .meta-block p{margin:0; font-size:14.5px; color:var(--ink2)}
+  .edu{margin:0 0 9px}
+  .edu .d{font-weight:700; font-size:14px; color:var(--ink)}
+  .edu .ip{color:var(--accent); font-weight:700; font-size:11px; letter-spacing:.2px}
+  .edu .s{font-size:13px; color:var(--ink2)}
+
+  footer{padding:24px 0 50px; margin-top:18px; color:var(--muted); font-size:12.5px; border-top:1px solid var(--line)}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+
+  /* print → clean two-page PDF */
+  @media print{
+    @page{ margin:13mm 13mm; }
+    :root{ --bg:#fff }
+    body{ background:#fff; font-size:11px; line-height:1.4 }
+    nav,footer .alt,.noprint{ display:none !important }
+    .wrap{ max-width:100%; padding:0 }
+    header.cv{ padding:0 0 4px }
+    .name{ font-size:25px }
+    .role{ font-size:13px; margin-top:5px }
+    .tag{ font-size:11.5px; margin-top:7px }
+    .meta{ margin-top:9px; font-size:10.5px; gap:4px 12px }
+    .meta a{ border:none }
+    .stats{ margin-top:11px; border-radius:8px }
+    .stat .n{ font-size:14px } .stat .l{ font-size:9px }
+    section{ padding:11px 0 2px }
+    .kicker{ margin-bottom:8px; font-size:10.5px }
+    .summary{ font-size:11.5px }
+    .job{ margin-bottom:9px; break-inside:avoid }
+    .job h3{ font-size:13px } .job li{ font-size:11px; margin:2.5px 0 }
+    .job .sub{ font-size:11px }
+    .earlier{ font-size:11px; line-height:1.6 }
+    .chip{ font-size:10px; padding:3px 7px }
+    .edu .d{ font-size:11.5px } .edu .s{ font-size:10.5px }
+    .grid{ break-inside:avoid }
+    a{ color:var(--ink) }
+    footer{ border:none; padding:8px 0 0 }
+  }
+</style>
+</head>
+<body>
+
+<nav class="noprint">
+  <div class="wrap">
+    <a class="brand" href="index.html">Keenan Gan<span class="d">.</span></a>
+    <ul>
+      <li class="hidem"><a href="index.html">Portfolio</a></li>
+      <li class="hidem"><a href="architecture.html">Architecture</a></li>
+      <li><a class="print" onclick="window.print()">↓ Download / Print</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="cv">
+  <div class="wrap">
+    <h1 class="name">Keenan Gan<span class="d">.</span></h1>
+    <p class="role">Operator &amp; builder — COO/CTO at CPID · ex-Sleek (banking-as-a-service) · ex-Accenture</p>
+    <p class="tag">I help people succeed with Claude — and I <b>run a whole business on it</b>. For about a year I've run an art school's entire operations on a fleet of Claude Code agents I built and maintain daily, including a human-in-the-loop customer-support agent that structurally can't send a reply until a human approves it. Before that I resolved every product issue for my fintech clients, to a positive NPS, at Sleek.</p>
+    <div class="meta">
+      <span class="cit">Singaporean citizen — no visa sponsorship needed</span>
+      <span>·</span>
+      <a href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a>
+      <a href="https://www.linkedin.com/in/keenan-gan-4b0993188" target="_blank" rel="noopener">linkedin.com/in/keenan-gan-4b0993188</a>
+      <a href="https://keenanlukegan.github.io/keenan-portfolio/" target="_blank" rel="noopener">portfolio ↗</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n">~1<span class="u"> yr</span></div><div class="l">running a real business daily on Claude + Claude Code</div></div>
+      <div class="stat"><div class="n">25<span class="u"> → 300</span></div><div class="l">clients grown at Sleek · positive NPS</div></div>
+      <div class="stat"><div class="n">1,000<span class="u">+</span></div><div class="l">fintech clients migrated to a new platform</div></div>
+      <div class="stat"><div class="n">368<span class="u"> / 368</span></div><div class="l">reports delivered, zero failures</div></div>
+      <div class="stat"><div class="n">0</div><div class="l">customer messages sent without human approval</div></div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Summary</p>
+    <p class="summary">A support-shaped operator with deep, daily Anthropic-product depth and a habit of building the systems that make support scale. Ten years across innovation consulting, fintech product, and operations leadership — now running a live business on Claude Code, so I've hit the product's real edges and built the knowledge bases, triage, and health checks that reduce contact rates. I've owned real customers' product problems end-to-end under pressure (Sleek). Applying to <b>found Anthropic's APAC Product Support function in Singapore</b>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Experience</p>
+
+    <div class="job">
+      <div class="top">
+        <h3><span class="co">Carla Priscilla Institute of Design (CPID)</span> — COO &amp; CTO <span class="where">· Bali, Indonesia</span></h3>
+        <span class="period">Oct 2023 – Present</span>
+      </div>
+      <p class="sub">Lead operations and technology for a founder-led art school — 300 monthly active students (800 at peak; 5,000+ taught across its ~10 years), 11 staff — running its entire operations on a fleet of Claude Code agents I built and maintain daily.</p>
+      <ul>
+        <li>Built a <b>human-in-the-loop WhatsApp customer-support agent</b>: every reply is drafted by the system, human-approved on Telegram, and only then sent — structurally unable to send an unapproved message. <b>0</b> messages ever sent without a human's approval.</li>
+        <li>Ran a phone-number <b>migration triage audit</b>: 76 chats → 86 prioritized actions → <b>14 critical issues</b> caught before they reached customers.</li>
+        <li>Built the systems that scale support — a self-maintaining knowledge base, a triage flow, and a <b>daily health-checker</b> that catches silent failures before customers feel them (reducing contact rates as volume grows).</li>
+        <li>Shipped <b>~19 automations across 7 business functions</b> (~9 fully unattended); delivered <b>368/368</b> eligible personalized reports with zero failures; auto-logged <b>8,489</b> staff check-ins; auto-graded 10 teachers monthly on ~16 KPIs (human-overridable).</li>
+        <li><b>Onboarded the non-technical owner onto Claude Code</b> — she now writes and commits her own automation work.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="top">
+        <h3><span class="co">Accenture</span> — Innovation Experience Consultant <span class="where">· Singapore</span></h3>
+        <span class="period">Jun 2022 – Jul 2023</span>
+      </div>
+      <p class="sub">Innovation consulting for enterprise clients.</p>
+      <ul>
+        <li>Ran innovation-hub operations and facilitated innovation workshops for enterprise clients using agile &amp; scrum methodology.</li>
+        <li>Drove open-innovation ventures, connecting corporates with emerging technology and startups.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="top">
+        <h3><span class="co">Sleek</span> — Account Executive, Banking-as-a-Service <span class="where">· Singapore</span></h3>
+        <span class="period">Jul 2021 – Mar 2022</span>
+      </div>
+      <p class="sub">Owned the full lifecycle of a banking-as-a-service (BaaS) product — presales, onboarding, and framework design.</p>
+      <ul>
+        <li>Grew the client base <b>25 → 300</b> and drove MAU from <b>10% → 30%</b>.</li>
+        <li>Migrated <b>1,000+ clients</b> onto a new banking-as-a-service platform.</li>
+        <li>Resolved <b>every client product issue</b> end-to-end under SLA pressure, to a <b>positive NPS</b> — coordinating internal and external tech &amp; support teams, including DBS.</li>
+        <li>Vetted legal &amp; partnership agreements with financial institutions and handled compliance for Sleek's MPI licence.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="top">
+        <h3><span class="co">Accenture</span> — Innovation Hub (Resources) <span class="where">· Singapore</span></h3>
+        <span class="period">Aug 2019 – Dec 2019</span>
+      </div>
+      <ul>
+        <li>Headed a case study for an MNC oil &amp; gas company integrating AI &amp; data analytics — interviewed subject-matter experts, sourced the technology partner, and storyboarded the narrative for C-level.</li>
+        <li><b>Presented case studies and live demos to C-suite executives across multiple MNCs</b> — part of the team that closed several enterprise deals.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Skills · Education · Certifications</p>
+    <div class="grid">
+      <div>
+        <div class="skill">
+          <p class="h">Anthropic products &amp; AI</p>
+          <div class="chips">
+            <span class="chip">Claude Code</span><span class="chip">skills</span><span class="chip">subagents</span><span class="chip">hooks</span><span class="chip">MCP</span><span class="chip">scheduled tasks</span><span class="chip">memory</span><span class="chip">CLAUDE.md routing</span><span class="chip">agentic system design</span><span class="chip">human-in-the-loop safety</span><span class="chip">prod debugging (headless auth, permissions)</span>
+          </div>
+        </div>
+        <div class="skill">
+          <p class="h">Customer &amp; product support</p>
+          <div class="chips">
+            <span class="chip">2nd-tier technical troubleshooting</span><span class="chip">case lifecycle</span><span class="chip">triage &amp; prioritization</span><span class="chip">knowledge-base design</span><span class="chip">CSAT / SLA</span><span class="chip">onboarding &amp; enablement</span><span class="chip">presales</span>
+          </div>
+        </div>
+        <div class="skill">
+          <p class="h">Operations &amp; engineering</p>
+          <div class="chips">
+            <span class="chip">operations management</span><span class="chip">process design</span><span class="chip">product management</span><span class="chip">systems architecture</span><span class="chip">monitoring / observability</span><span class="chip">Google Apps Script</span><span class="chip">Node / Playwright</span><span class="chip">CRM (HubSpot)</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="meta-block">
+          <p class="h">Education</p>
+          <div class="edu">
+            <div class="d">Sociology, Minor in Fintech <span class="ip">· IN PROGRESS</span></div>
+            <div class="s">Singapore University of Social Sciences (SUSS) · 2023–Present</div>
+          </div>
+          <div class="edu">
+            <div class="d">BSc Economics &amp; Finance</div>
+            <div class="s">Singapore Institute of Management / University of London · 2016–2020</div>
+          </div>
+          <div class="edu">
+            <div class="d">GCE A-Level</div>
+            <div class="s">St Andrew's Junior College · 2011–2012</div>
+          </div>
+        </div>
+        <div class="meta-block">
+          <p class="h">Certifications</p>
+          <p>Certified Scrum Master<br>IBM Enterprise Design Thinking — Co-Creator &amp; Practitioner</p>
+        </div>
+        <div class="meta-block">
+          <p class="h">Languages</p>
+          <p>English — full professional<br>Mandarin — native / bilingual</p>
+        </div>
+        <div class="meta-block">
+          <p class="h">Honours</p>
+          <p>Commander's Award — Certis Cisco</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Keenan Gan · Singaporean citizen · keenanlukegan@gmail.com</span>
+    <span class="alt">Applying — Anthropic Product Support Specialist, Singapore · all CPID data synthetic or redacted</span>
+  </div>
+</footer>
+
+</body>
+</html>
