@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keenan Gan — Systems Architect</title>
+<meta name="description" content="I design the architecture that runs a business and makes its AI safe by construction. At a Bali art school, my system runs the whole operation on a fleet of Claude agents — but the agents are the byproduct. The work is the architecture.">
+<style>
+  :root{
+    --bg:#faf8f5; --ink:#1b1916; --muted:#6c6760; --line:#e8e3db; --card:#ffffff;
+    --accent:#bd4b2c; --accent-deep:#9a3b20; --accent-soft:#f7e9e3;
+    --gate:#a3331f; --gate-soft:#fbece7;
+    --auto:#0a6b54; --auto-soft:#e4f1ec;
+    --ink2:#3c3833;
+    --maxw:900px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; font-size:16px}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px}
+  a{color:var(--accent-deep)}
+
+  nav{position:sticky; top:0; z-index:10; background:rgba(250,248,245,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:60px}
+  .brand{font-weight:800; letter-spacing:-.4px; font-size:18px; color:var(--ink); text-decoration:none}
+  .brand .d{color:var(--accent)}
+  nav ul{display:flex; gap:22px; list-style:none; margin:0; padding:0; font-size:14.5px}
+  nav a{color:var(--muted); text-decoration:none}
+  nav a:hover{color:var(--ink)}
+  @media(max-width:680px){ nav ul{display:none} }
+
+  header.hero{padding:74px 0 28px}
+  .eyebrow{font-size:13px; letter-spacing:1.6px; text-transform:uppercase; color:var(--accent); font-weight:700; margin:0 0 18px}
+  h1{font-size:41px; line-height:1.12; letter-spacing:-1.2px; margin:0; font-weight:800; max-width:780px}
+  h1 .hl{background:linear-gradient(transparent 62%, var(--accent-soft) 62%); padding:0 2px}
+  .lede{font-size:18px; color:var(--ink2); max-width:680px; margin:22px 0 0}
+  .lede b{color:var(--ink)}
+  .hero-meta{display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:26px; align-items:center}
+  .hero-meta a.btn{background:var(--ink); color:#fff; text-decoration:none; font-weight:600; font-size:14.5px; padding:9px 16px; border-radius:8px}
+  .hero-meta a.btn.alt{background:transparent; color:var(--ink); border:1px solid #d8d2c8}
+  .status{display:inline-flex; align-items:center; gap:7px; font-size:13.5px; color:var(--auto); font-weight:600}
+  .status .dot{width:8px; height:8px; border-radius:50%; background:var(--auto)}
+
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden; margin:40px 0 8px}
+  @media(max-width:640px){ .stats{grid-template-columns:repeat(2,1fr)} }
+  .stat{background:var(--card); padding:18px 16px}
+  .stat .n{font-size:23px; font-weight:800; letter-spacing:-.5px; color:var(--ink)}
+  .stat .n .u{color:var(--accent)}
+  .stat .l{font-size:12.5px; color:var(--muted); margin-top:3px; line-height:1.35}
+
+  section{padding:50px 0; border-top:1px solid var(--line)}
+  .kicker{font-size:13px; text-transform:uppercase; letter-spacing:1.6px; color:var(--accent); font-weight:700; margin:0 0 6px}
+  h2{font-size:28px; letter-spacing:-.5px; margin:0 0 10px; font-weight:800}
+  .sec-intro{color:var(--ink2); max-width:680px; margin:0 0 24px; font-size:16.5px}
+  .sec-intro b{color:var(--ink)}
+
+  /* thesis */
+  .thesis{background:var(--ink); color:#f3ede6; border-radius:16px; padding:30px 30px}
+  .thesis .big{font-size:24px; font-weight:800; letter-spacing:-.4px; margin:0 0 12px; color:#fff}
+  .thesis .big u{color:#f0a387; text-decoration:none}
+  .thesis p{margin:0; color:#d7cfc6; font-size:16px; max-width:680px}
+  .thesis p + p{margin-top:12px}
+  .thesis code{background:rgba(255,255,255,.1); padding:1px 6px; border-radius:5px; font-size:13.5px; color:#f3ede6}
+  .creds{margin-top:16px; display:flex; flex-wrap:wrap; gap:8px}
+  .creds span{font-size:12.5px; background:rgba(255,255,255,.08); color:#e7ded4; padding:5px 11px; border-radius:999px}
+
+  /* flow primitives */
+  .flow{display:flex; align-items:stretch; flex-wrap:wrap; gap:9px; margin:6px 0}
+  .node{flex:1 1 130px; min-width:118px; border:1px solid var(--line); border-radius:11px; padding:12px 13px; background:#fff}
+  .node .t{font-weight:700; font-size:14.5px}
+  .node .d{font-size:12.5px; color:var(--muted); margin-top:3px; line-height:1.4}
+  .node.gate{border-color:#e0b3a8; background:var(--gate-soft)}
+  .node.autob{border-color:#aed8cb; background:var(--auto-soft)}
+  .arrow{align-self:center; color:#b9b2a7; font-size:19px; font-weight:700}
+  .pill{display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:.4px; padding:2px 8px; border-radius:6px; margin-top:9px; text-transform:uppercase}
+  .pill.human{background:var(--gate-soft); color:var(--gate)}
+  .pill.auto{background:var(--auto-soft); color:var(--auto)}
+
+  /* autonomy dial principles */
+  .principles{display:grid; grid-template-columns:1fr 1fr; gap:18px 30px; margin-top:26px}
+  @media(max-width:640px){ .principles{grid-template-columns:1fr} }
+  .principle h4{margin:0 0 3px; font-size:16px}
+  .principle p{margin:0; color:var(--ink2); font-size:14.5px}
+  .principle .n{color:var(--accent); font-weight:800; font-size:13px}
+
+  /* second brain */
+  .brain{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:24px}
+  .chips{display:flex; flex-wrap:wrap; gap:7px; margin-top:4px}
+  .chip{font-size:12.5px; background:var(--bg); border:1px solid var(--line); color:var(--ink2); padding:5px 11px; border-radius:8px}
+  .brain .loop{margin-top:16px; font-size:13.5px; color:var(--auto); background:var(--auto-soft); border-radius:9px; padding:10px 14px; font-weight:600}
+
+  /* fleet map */
+  .fleet{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:6px}
+  @media(max-width:720px){ .fleet{grid-template-columns:1fr 1fr} }
+  .layer{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px}
+  .layer h5{margin:0 0 9px; font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--accent)}
+  .layer ul{margin:0; padding:0; list-style:none; font-size:13px; color:var(--ink2)}
+  .layer li{padding:4px 0; border-bottom:1px dashed var(--line)}
+  .layer li:last-child{border-bottom:0}
+  .overlay{margin-top:10px; background:var(--accent-soft); color:var(--accent-deep); border-radius:10px; padding:11px 15px; font-size:13.5px; font-weight:600}
+
+  /* ADRs (explorable decisions) */
+  details.adr{background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; overflow:hidden}
+  details.adr[open]{border-color:#d8c4b8}
+  details.adr summary{list-style:none; cursor:pointer; padding:16px 20px; display:flex; align-items:baseline; gap:12px}
+  details.adr summary::-webkit-details-marker{display:none}
+  details.adr summary .id{font-size:12px; font-weight:800; color:var(--accent); white-space:nowrap; letter-spacing:.3px}
+  details.adr summary .ti{font-weight:700; font-size:16px; flex:1}
+  details.adr summary .tog{color:var(--muted); font-size:18px; transition:transform .15s}
+  details.adr[open] summary .tog{transform:rotate(45deg)}
+  .adr-body{padding:2px 20px 18px; border-top:1px solid var(--line)}
+  .adr-body .row{display:grid; grid-template-columns:84px 1fr; gap:6px 14px; margin-top:12px; font-size:14.5px}
+  .adr-body dt{font-weight:800; font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--accent); padding-top:3px}
+  .adr-body dd{margin:0; color:var(--ink2)}
+  .adr-body dd b{color:var(--ink)}
+
+  /* evidence cards */
+  .ev{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px}
+  @media(max-width:680px){ .ev{grid-template-columns:1fr} }
+  .evcard{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px}
+  .evcard .tag{font-size:10.5px; font-weight:800; letter-spacing:.3px; padding:3px 9px; border-radius:999px; text-transform:uppercase}
+  .tag.human{background:var(--gate-soft); color:var(--gate)}
+  .tag.mixed{background:var(--accent-soft); color:var(--accent-deep)}
+  .evcard h3{font-size:17px; margin:10px 0 6px; letter-spacing:-.2px}
+  .evcard p{margin:0; font-size:14px; color:var(--ink2)}
+  .evcard .m{margin-top:12px; font-size:14px; font-weight:700; color:var(--ink)}
+  .evcard .m u{color:var(--accent); text-decoration:none}
+  .evcard .refs{margin-top:10px; font-size:11.5px; color:var(--muted)}
+
+  /* proof + field notes */
+  .redact{font-size:12px; color:var(--muted); margin-top:9px; font-style:italic}
+  .demo-slot{background:#1b1916; color:#f3ede6; border-radius:14px; padding:30px 24px; text-align:center; margin-top:6px}
+  .demo-slot .play{font-size:30px; opacity:.9}
+  .demo-slot .t{font-weight:700; font-size:17px; margin-top:6px; color:#fff}
+  .demo-slot .cap{font-size:13.5px; color:#cfc7bd; max-width:560px; margin:8px auto 0}
+  .codeproof{margin-top:16px; background:#1b1916; border-radius:12px; overflow:hidden}
+  .codeproof .ct{font-size:12px; color:#f0a387; padding:11px 16px; border-bottom:1px solid #332f2a; font-weight:700; letter-spacing:.3px}
+  .codeproof pre{margin:0; padding:16px; overflow-x:auto; font-size:13px; line-height:1.55; color:#e7ded4; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .codeproof .cm{color:#8aa893} .codeproof .kw{color:#f0a387}
+  .codeproof .cap{font-size:12.5px; color:#cfc7bd; padding:0 16px 14px}
+  .shotrow{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px}
+  @media(max-width:680px){ .shotrow{grid-template-columns:1fr} }
+  .shot{border:1.5px dashed #d8c4b8; border-radius:11px; padding:16px; background:#fff}
+  .shot .ic{font-size:18px} .shot .t{font-weight:700; font-size:14px; margin-top:4px}
+  .shot .n{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.45}
+  .callout{display:flex; gap:13px; align-items:flex-start; background:var(--auto-soft); border-radius:12px; padding:15px 18px; margin-top:12px}
+  .callout .em{font-size:20px; line-height:1.2} .callout .tx{font-size:15px; color:var(--ink2)} .callout .tx b{color:var(--ink)}
+  .callout .v{font-size:12px; color:var(--auto); font-weight:700; margin-top:3px}
+
+  .about p{color:var(--ink2); max-width:700px; font-size:16.5px}
+  .about p + p{margin-top:14px}
+  .contact a{display:inline-block; font-size:15px; text-decoration:none; color:#fff; background:var(--ink); padding:10px 18px; border-radius:9px; font-weight:600; margin:4px 8px 4px 0}
+  .contact a.alt{background:transparent; color:var(--ink); border:1px solid #d8d2c8}
+  footer{padding:30px 0 60px; color:var(--muted); font-size:13px; border-top:1px solid var(--line)}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">Keenan Gan<span class="d">.</span></a>
+    <ul>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#decisions">Decisions</a></li>
+      <li><a href="#systems">Systems</a></li>
+      <li><a href="#proof">Proof</a></li>
+      <li><a href="#claude-code">Claude Code</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Systems architect · Singaporean · Bali / Singapore</p>
+    <h1>I design the architecture that runs a business — and makes its AI <span class="hl">safe by construction</span>.</h1>
+    <p class="lede">At a small art school in Bali, my system runs the entire operation on a fleet of Claude agents. But <b>the agents are the byproduct</b>. The work is the architecture: the intelligence lives in the <b>structure</b>, not the model — one source of truth, safety the code can't violate, failure handling that assumes everything breaks, and a self-maintaining <b>second brain</b> that holds the whole thing in memory.</p>
+    <div class="hero-meta">
+      <a class="btn" href="#decisions">How I made the calls ↓</a>
+      <a class="btn alt" href="https://www.linkedin.com/in/keenan-gan-4b0993188" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn alt" href="mailto:keenanlukegan@gmail.com">Email</a>
+      <span class="status"><span class="dot"></span>Building toward applied / forward-deployed AI work</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="stat"><div class="n">~19<span class="u"> automations</span></div><div class="l">across 7 business functions, one architecture</div></div>
+    <div class="stat"><div class="n">~9 <span class="u">unattended</span></div><div class="l">run hands-off; the rest are gated by design</div></div>
+    <div class="stat"><div class="n">368<span class="u"> / 368</span></div><div class="l">personalized reports delivered, zero failures</div></div>
+    <div class="stat"><div class="n">8,489</div><div class="l">staff check-ins auto-logged (Mar–Jun)</div></div>
+    <div class="stat"><div class="n">~10 <span class="u">weeks</span></div><div class="l">live in production, health-checked daily</div></div>
+    <div class="stat"><div class="n">~500</div><div class="l">active students · 11 teachers · one non-technical owner</div></div>
+  </div>
+</div>
+
+<!-- THESIS -->
+<section id="thesis">
+  <div class="wrap">
+    <p class="kicker">How I think</p>
+    <h2>Structure is the intelligence</h2>
+    <div class="thesis">
+      <p class="big">The agent is generic. The <u>architecture</u> is the IP.</p>
+      <p>The model will change every few months. The durable value isn't the agent — it's how the system is built: what's impossible by design, where truth lives, how it fails, and how its knowledge is structured. I build on two patterns and operationalize them for a real business:</p>
+      <p><b style="color:#fff">Folder-structure-as-architecture</b> — the Interpreted Context Methodology. The intelligence lives in a deliberately layered context (<code>numbered stages → CONTEXT.md routing → reference → artifacts</code>), read by one generic agent — not a bespoke agent per task. Swap the model; the structure holds.</p>
+      <p><b style="color:#fff">A self-maintaining second brain</b> — Karpathy's LLM-wiki pattern. The company's knowledge lives in an interlinked, self-linting knowledge base the system maintains itself, so it inherits memory instead of rebuilding it every session.</p>
+      <div class="creds"><span>credit: Interpreted Context Methodology — Jake Van Clief</span><span>credit: LLM Wiki — Andrej Karpathy</span><span>my work: operationalizing them for a live business</span></div>
+    </div>
+
+    <div class="principles">
+      <div class="principle"><div class="n">01</div><h4>Safe by construction</h4><p>The unsafe state is made unreachable in the data flow — not guarded by a rule the code has to remember to honor.</p></div>
+      <div class="principle"><div class="n">02</div><h4>Assume everything breaks</h4><p>Every unattended job gets an independent watcher that fails separately from the thing it watches.</p></div>
+      <div class="principle"><div class="n">03</div><h4>One source of truth per fact</h4><p>A fact with two homes will disagree with itself. Everything traces back to one authoritative place.</p></div>
+      <div class="principle"><div class="n">04</div><h4>Use the model only for judgment</h4><p>Deterministic work runs on plain cron. Knowing where <i>not</i> to put an LLM is part of the design.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="wrap">
+    <p class="kicker">The architecture</p>
+    <h2>One operator, a structured system, a whole business</h2>
+    <p class="sec-intro">CPID is a ~500-student art school in Bali run by a non-technical founder. The architecture is a graph of single-purpose processors over shared data backbones, talking to WhatsApp and Telegram — with two cross-cutting layers: a <b>monitoring layer</b> that watches every automation, and a <b>knowledge layer</b> (the second brain) that holds the system's memory.</p>
+    <div class="fleet">
+      <div class="layer"><h5>Data backbones</h5><ul><li>Schedule sheets (11 teachers)</li><li>CRM</li><li>Notes Masalah</li><li>Performance &amp; Pay</li><li>Student reports</li><li>Drive (artwork)</li></ul></div>
+      <div class="layer"><h5>Processors · 7 functions</h5><ul><li>Customer comms</li><li>Deliverable production</li><li>Staff performance</li><li>Issue escalation</li><li>Reporting</li><li>Scheduling · Monitoring</li></ul></div>
+      <div class="layer"><h5>Surfaces</h5><ul><li>WhatsApp (in &amp; out)</li><li>Telegram (approvals)</li><li>Gmail</li><li>Per-student reports</li></ul></div>
+      <div class="layer"><h5>People</h5><ul><li>Owner — approves</li><li>11 teachers</li><li>~500 parents</li><li>Me — I architect it</li></ul></div>
+    </div>
+    <div class="overlay">🩺 <b>Monitoring layer</b> — a daily health-check agent watches every automation; in ~10 weeks it caught a silent 6-minute execution timeout (10+ error emails/day) and reported the cause before anyone noticed.</div>
+
+    <div class="brain" style="margin-top:14px">
+      <p class="kicker" style="margin-bottom:8px">Knowledge layer · the second brain</p>
+      <p style="margin:0 0 4px; color:var(--ink2); font-size:15px">An LLM-built, LLM-maintained wiki (Karpathy's pattern): immutable sources go into <code style="font-size:13px">raw/</code>, the system ingests them into interlinked <code style="font-size:13px">[[wikilinks]]</code>, and a weekly linter catches drift. Organized by <b>knowledge type</b>, not by author or date:</p>
+      <div class="chips">
+        <span class="chip">system</span><span class="chip">departments</span><span class="chip">workflows</span><span class="chip">decisions</span><span class="chip">troubleshooting</span><span class="chip">people</span><span class="chip">projects</span><span class="chip">resources</span><span class="chip">onboarding</span><span class="chip">daily</span>
+      </div>
+      <div class="loop">↻ Self-correcting: the lint has caught real drift — a doc claiming "18 KPIs" while listing 16, and a blocker still assigned to a staff member who had left.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DECISIONS (ADRs) -->
+<section id="decisions">
+  <div class="wrap">
+    <p class="kicker">How I made the calls</p>
+    <h2>Architecture Decision Records</h2>
+    <p class="sec-intro">An architect is judged by their decisions. Each of these is a real call forced by a real situation — most of them by a real failure. <b>Click any one to open it.</b></p>
+
+    <details class="adr" open>
+      <summary><span class="id">ADR-01</span><span class="ti">Structure is the architecture; the agent is generic</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Context</dt><dd>The default is a bespoke agent per task — a framework graph, prompts wired to tools. That puts the intelligence in the part that changes underneath you: the model.</dd>
+        <dt>Decision</dt><dd>Follow the Interpreted Context Methodology: put the intelligence in a layered <b>context</b> — numbered stage folders, <code>CLAUDE.md → CONTEXT.md</code> routing, reference + artifact layers — and let one generic agent read the right files.</dd>
+        <dt>Why</dt><dd>Agents are interchangeable; a well-structured context is durable and model-agnostic. The folder structure <i>is</i> the program.</dd>
+        <dt>Result</dt><dd><b>agency-os</b> runs jobs through numbered stage folders (<code>00-draft/</code>, <code>10-send/</code>), each scoped by its own <code>CONTEXT.md</code>. No framework, no per-task agent.</dd>
+      </dl></div>
+    </details>
+
+    <details class="adr">
+      <summary><span class="id">ADR-02</span><span class="ti">Give the company a second brain that maintains itself</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Context</dt><dd>Knowledge lived in people's heads and scattered chats. Every session re-derived the same context; every new helper started cold.</dd>
+        <dt>Decision</dt><dd>A persistent, interlinked markdown wiki the LLM builds and maintains (Karpathy's pattern). Sources immutable; pages organized by knowledge type; a weekly linter catches drift; the log is append-only.</dd>
+        <dt>Why</dt><dd>A self-maintaining knowledge layer means the system — and any new maintainer — <i>inherits</i> memory instead of rebuilding it.</dd>
+        <dt>Result</dt><dd>A live ~11-category second brain with a self-correcting lint that catches real drift (a stale KPI count; a blocker assigned to departed staff).</dd>
+      </dl></div>
+    </details>
+
+    <details class="adr">
+      <summary><span class="id">ADR-03</span><span class="ti">Make "no unapproved send" structural, not behavioral</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Context</dt><dd>The support agent drafts replies to real parents. "Don't send without approval" as a code <i>rule</i> is one bug away from an AI texting a customer.</dd>
+        <dt>Decision</dt><dd>The send path can only read a server-side queue returning <i>only</i> human-approved, unsent rows. Approval is a state change a human triggers; no code path sets it automatically.</dd>
+        <dt>Why</dt><dd>A safety property you can <i>prove</i> from the data flow beats one you trust the code to honor. The unsafe state is unreachable.</dd>
+        <dt>Result</dt><dd>Even a crashing sender physically cannot send an unapproved message. Zero unreviewed sends.</dd>
+      </dl></div>
+    </details>
+
+    <details class="adr">
+      <summary><span class="id">ADR-04</span><span class="ti">Open chats by phone, never by name</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Context</dt><dd>A reminder once went to the <i>wrong chat</i> — a name search matched a different conversation and the bot sent into it, logging success. Caught only by manual audit.</dd>
+        <dt>Decision</dt><dd>Outbound messaging opens a chat by phone number via a deterministic deep link. Name-based resolution is banned.</dd>
+        <dt>Why</dt><dd>Names are ambiguous; a phone number is a unique key. A student with no phone is <i>skipped</i>, not guessed — the safe failure direction.</dd>
+        <dt>Result</dt><dd>Eliminated the wrong-recipient class of error.</dd>
+      </dl></div>
+    </details>
+
+    <details class="adr">
+      <summary><span class="id">ADR-05</span><span class="ti">The watcher must not share a failure domain with the watched</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Context</dt><dd>A two-day silent outage: the scheduler fired, but an auth error meant the orchestrator never woke — so nothing sent <i>and</i> no alert fired, because the alerting lived inside that same orchestrator.</dd>
+        <dt>Decision</dt><dd>An independent auditor — pure bash + curl, no model, no shared runtime — checks for the expected output each morning and pings Telegram if it's missing.</dd>
+        <dt>Why</dt><dd>Inline error handling can't report a failure that stops it from running. The monitor must fail <i>independently</i> of what it watches.</dd>
+        <dt>Result</dt><dd>Silent failures became loud — "no run" and "partial run" are caught even when the primary stack is dead.</dd>
+      </dl></div>
+    </details>
+
+    <details class="adr">
+      <summary><span class="id">ADR-06</span><span class="ti">Use the model only where judgment is needed; cron is not judgment</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Context</dt><dd>Deterministic "run this script daily" jobs were running through a model-driven scheduler, adding auth/availability failure modes to work that needed no reasoning.</dd>
+        <dt>Decision</dt><dd>Pure scheduled work runs on the OS scheduler (<code>launchd</code>). The model-driven scheduler is reserved for jobs that genuinely need reasoning.</dd>
+        <dt>Why</dt><dd>Don't put an LLM on the critical path of work that doesn't need one — every dependency is a failure mode.</dd>
+        <dt>Result</dt><dd>Removed a fragile dependency from the reliability-critical reminder job.</dd>
+      </dl></div>
+    </details>
+
+    <details class="adr">
+      <summary><span class="id">ADR-07</span><span class="ti">One source of truth per fact</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Context</dt><dd>Teacher KPIs could be hand-entered or re-derived in several places — drift and disputes, and these numbers change someone's pay.</dd>
+        <dt>Decision</dt><dd>Each KPI is scored from exactly one named authoritative system (uploads from Drive, attendance from the check-in bot, retention from the enrollment sheet). The gradebook references sources; it doesn't re-keep them.</dd>
+        <dt>Why</dt><dd>A fact with two homes will eventually disagree with itself. Traceability is what makes an automated grade defensible in a payslip.</dd>
+        <dt>Result</dt><dd>Every KPI score traces to a source; subjective ones route to a human override instead of a second source of truth.</dd>
+      </dl></div>
+    </details>
+
+    <details class="adr">
+      <summary><span class="id">ADR-08</span><span class="ti">Place every automation on the autonomy dial deliberately</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Context</dt><dd>"How much should this run on its own?" differs for a customer reply vs a reminder vs an internal report — and a non-technical owner has to trust the whole fleet.</dd>
+        <dt>Decision</dt><dd>Every automation is placed on <b>draft → auto → gated</b> by two tests: is it reversible, and is it customer-facing? Customer-facing or irreversible ⇒ gated, always.</dd>
+        <dt>Why</dt><dd>A consistent, legible safety model across the fleet beats per-automation cleverness. The owner reasons about the whole system with one rule.</dd>
+        <dt>Result</dt><dd>A non-technical owner can predict what any agent will and won't do on its own.</dd>
+      </dl></div>
+    </details>
+  </div>
+</section>
+
+<!-- SYSTEMS (evidence) -->
+<section id="systems">
+  <div class="wrap">
+    <p class="kicker">The systems · evidence the architecture works</p>
+    <h2>The decisions, running in production</h2>
+    <p class="sec-intro">Three processors that put the decisions above to work — each sitting at a different point on the autonomy dial.</p>
+    <div class="ev">
+      <div class="evcard">
+        <span class="tag human">Human-gated</span>
+        <h3>The support agent that can't send unapproved</h3>
+        <p>Every parent reply is drafted, pushed to the owner's Telegram (Approve / Edit / Reject), and sendable only once approved.</p>
+        <div class="m"><u>0</u> customer messages sent without a human's eyes</div>
+        <div class="refs">embodies ADR-03 (structural safety) · ADR-08 (autonomy dial)</div>
+      </div>
+      <div class="evcard">
+        <span class="tag mixed">Automated · audited</span>
+        <h3>Daily reminders that never double-text a parent</h3>
+        <p>Phone-first opening + three dedup rings, fired six mornings a week, with an independent auditor that pings me if a run goes quiet.</p>
+        <div class="m"><u>~82</u> student-class slots reminded every week, hands-off</div>
+        <div class="refs">embodies ADR-04 (phone-first) · ADR-05 (independent watcher) · ADR-06 (launchd)</div>
+      </div>
+      <div class="evcard">
+        <span class="tag mixed">Automated · overridable</span>
+        <h3>KPIs that grade themselves, with a human veto</h3>
+        <p>~16 KPIs per teacher, each scored from a named live system, flowing into a compliant payslip — subjective ones pass unless a human flags them.</p>
+        <div class="m"><u>10</u> teachers auto-graded monthly from 8+ live systems</div>
+        <div class="refs">embodies ADR-07 (one source of truth) · ADR-08 (autonomy dial)</div>
+      </div>
+      <div class="evcard">
+        <span class="tag mixed">Self-maintaining</span>
+        <h3>A second brain the system keeps current</h3>
+        <p>An LLM-maintained wiki organized by knowledge type, with a weekly linter that flags stale pages, broken links, and contradictions.</p>
+        <div class="m"><u>~11</u> knowledge categories, self-linting</div>
+        <div class="refs">embodies ADR-02 (self-maintaining knowledge) · ADR-01 (structure-as-architecture)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section id="proof">
+  <div class="wrap">
+    <p class="kicker">Proof</p>
+    <h2>See it run</h2>
+    <p class="sec-intro">Claims are cheap. Here's the system actually working — and the line of code that makes the safety <i>structural</i>, not a promise. Live captures from the real system; all customer data synthetic or redacted.</p>
+
+    <div class="demo-slot">
+      <div class="play">▶</div>
+      <div class="t">90-second demo — the approval gate, end to end</div>
+      <div class="cap">Synthetic parent message → AI draft → Telegram <b>Approve</b> → send. <span style="color:#9aa88f">[ screen recording drops in here ]</span></div>
+    </div>
+    <p class="redact">Capture: send a test message from a spare number, approve it on Telegram, screen-record ~90s. Redaction: none needed — the conversation is synthetic.</p>
+
+    <div class="codeproof">
+      <div class="ct">ADR-03, proven — the queue the bot reads is the only thing it can send</div>
+<pre><span class="cm">// The cycler can ONLY send what this returns.</span>
+<span class="kw">function</span> listPending() {
+  <span class="kw">return</span> rows.filter(r =&gt;
+    r.status === <span class="kw">'APPROVED'</span> &amp;&amp;   <span class="cm">// a human tapped Approve in Telegram</span>
+    !r.sent_at                  <span class="cm">// and it hasn't gone out yet</span>
+  );
+}
+<span class="cm">// Nothing sets status to 'APPROVED' automatically.</span>
+<span class="cm">// A PENDING or REJECTED draft is structurally unsendable.</span></pre>
+      <div class="cap">The actual shape of the gate — real, checkable, and free of any customer data.</div>
+    </div>
+
+    <div class="shotrow">
+      <div class="shot"><div class="ic">🩺</div><div class="t">Health-checker catching the timeout</div><div class="n">The real DAILY_CHECK that flagged the 6-min execution timeout + its cause. <b>Redact:</b> teacher names → A–F.</div></div>
+      <div class="shot"><div class="ic">📊</div><div class="t">A teacher's KPI gradebook</div><div class="n">The KPI table + pay-calc box. <b>Redact:</b> name → TC-1, blur figures, crop the student roster.</div></div>
+      <div class="shot"><div class="ic">🔭</div><div class="t">The auditor's "run didn't happen" ping</div><div class="n">The real Telegram alert from the watchdog. <b>Redact:</b> any names / numbers.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLAUDE CODE -->
+<section id="claude-code">
+  <div class="wrap">
+    <p class="kicker">Daily driver</p>
+    <h2>I don't just use Claude — I run a business on it</h2>
+    <p class="sec-intro">I'm applying to help people succeed with Claude. I've been the most demanding kind of user for a year: a production fleet on Claude Code that a non-technical owner depends on every day. I've hit the edges and engineered around them — which <i>is</i> the job.</p>
+
+    <div class="callout"><div class="em">🧑‍🏫</div><div><div class="tx">I onboarded a <b>non-technical owner onto Claude Code</b> — she now authors her own automation commits.</div><div class="v">verifiable in the repo's git history</div></div></div>
+    <div class="callout"><div class="em">📆</div><div><div class="tx"><b>~A year of daily use.</b> Session logs auto-append to a wiki every day; the fleet runs every morning.</div><div class="v">commit history + daily logs</div></div></div>
+
+    <p class="sec-intro" style="margin:26px 0 10px"><b>Field notes — real edge cases I diagnosed running Claude Code in production.</b> The texture of an actual support ticket, answered from having lived it. <b>Click to open.</b></p>
+
+    <details class="adr" open>
+      <summary><span class="id">NOTE</span><span class="ti">Headless auth ≠ interactive auth</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Symptom</dt><dd>A scheduled job did nothing for two days — and sent no alert.</dd>
+        <dt>Cause</dt><dd>My interactive <code>claude</code> was authed the whole time, but the headless / Desktop-spawned sessions threw ~3,000 <code>401</code>s at every fire window. The orchestrator never woke, so it never reached its own error-reporting.</dd>
+        <dt>Fix</dt><dd>An <i>independent</i> canary that can't share the failure domain, and moving deterministic cron off the model-driven path entirely.</dd>
+      </dl></div>
+    </details>
+    <details class="adr">
+      <summary><span class="id">NOTE</span><span class="ti">Unattended runs hang on a permission-prefix mismatch</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Symptom</dt><dd>A cron task fired but hung instead of running.</dd>
+        <dt>Cause</dt><dd>The prompt issued <code>cd "…" &amp;&amp; node script.js</code>, which didn't match my allow-list prefix <code>Bash(node …wa-remind-send.js *)</code> — so it waited for a permission tap no human was there to give.</dd>
+        <dt>Fix</dt><dd>Match allowed-tool prefixes to the exact command shape for headless runs; add a watchdog for "waiting on input that'll never come."</dd>
+      </dl></div>
+    </details>
+    <details class="adr">
+      <summary><span class="id">NOTE</span><span class="ti">Cron isn't judgment — don't put the model on its critical path</span><span class="tog">+</span></summary>
+      <div class="adr-body"><dl class="row">
+        <dt>Symptom</dt><dd>Reliability-critical daily jobs inheriting auth / availability failures they didn't need.</dd>
+        <dt>Cause</dt><dd>Deterministic "run this script" work was routed through a model-driven scheduler — adding the whole LLM dependency to work that needs no reasoning.</dd>
+        <dt>Fix</dt><dd>Pure cron → <code>launchd</code>; reserve the model-driven scheduler for jobs that genuinely reason. Knowing where <i>not</i> to use the model is the skill.</dd>
+      </dl></div>
+    </details>
+
+    <p class="sec-intro" style="margin:26px 0 8px">The feature surface I use in anger, daily:</p>
+    <div class="chips">
+      <span class="chip">skills</span><span class="chip">subagents</span><span class="chip">hooks</span><span class="chip">MCP</span><span class="chip">scheduled tasks</span><span class="chip">memory</span><span class="chip">CLAUDE.md routing</span><span class="chip">Apps Script + Playwright</span>
+    </div>
+
+    <div class="overlay" style="margin-top:18px">Diagnosing what breaks, enabling non-technical users, knowing the product's edges cold — that's the Product Specialist job. I do it daily, for real stakes.</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about">
+  <div class="wrap">
+    <p class="kicker">About</p>
+    <h2>Why I build it this way</h2>
+    <p>I'm a Singaporean systems architect. For the past year I've designed and run the entire operations of a small art school in Bali on a system I architect and maintain myself — customer comms, deliverable production, staff performance, scheduling, reporting, the monitoring that watches all of it, and the second brain that remembers it.</p>
+    <p>The hardest part was never the code. It was earning the trust of a non-technical owner who has to live with whatever the system does to her business and her customers. That's why everything starts gated, why nothing irreversible goes out without a sign-off, why every unattended job has a watcher, and why I treat the <i>structure</i> — not any one agent — as the thing worth getting right. Responsible, human-in-the-loop AI isn't a slide here; it's the only way a real person was ever going to let me run their company on it.</p>
+    <p>I'm building toward applied / forward-deployed AI work, where that same instinct — architect real agentic systems into a real business, carefully — is the whole job.</p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="about">
+  <div class="wrap">
+    <p class="kicker">Contact</p>
+    <h2>Let's talk</h2>
+    <p class="sec-intro">Happy to walk through any of these decisions in detail — including the ones I got wrong first, and what the failure taught me.</p>
+    <div class="contact">
+      <a href="https://www.linkedin.com/in/keenan-gan-4b0993188" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="alt" href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Keenan Gan · Systems architect</span>
+    <span>Patterns credited: ICM (Jake Van Clief) · LLM Wiki (Karpathy) · all CPID data synthetic or redacted</span>
+  </div>
+</footer>
+
+</body>
+</html>
