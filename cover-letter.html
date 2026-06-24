@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keenan Gan — Cover letter, Anthropic Product Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf8f5; --surface:#ffffff; --ink:#1b1916; --ink-2:#3c3833; --muted:#6c6760;
+    --line:#e8e3db; --accent:#bd4b2c; --accent-deep:#9a3b20;
+    --font:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    --mono:'Spline Sans Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font);
+    line-height:1.72; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{color:var(--accent-deep)}
+  .wrap{max-width:680px; margin:0 auto; padding:0 24px}
+
+  nav{border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--bg) 92%,transparent);
+    position:sticky; top:0; backdrop-filter:blur(8px); z-index:5}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:58px; max-width:760px}
+  .brand{font-weight:800; letter-spacing:-.04em; font-size:20px; color:var(--ink)}
+  nav a.back{font-family:var(--mono); font-size:13px; color:var(--muted)}
+  nav a.back:hover{color:var(--accent)}
+
+  header.head{padding:60px 0 8px}
+  .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent)}
+  h1{font-size:clamp(30px,5vw,42px); font-weight:800; letter-spacing:-.035em; line-height:1.05; margin:14px 0 0}
+  .contact{font-family:var(--mono); font-size:13px; color:var(--muted); margin:18px 0 0; line-height:1.7}
+  .contact a{color:var(--muted)} .contact a:hover{color:var(--accent)}
+  .rule{height:1px; background:var(--line); margin:34px 0}
+
+  .letter p{font-size:18px; color:var(--ink-2); margin:0 0 22px}
+  .letter p:first-child{margin-top:0}
+  .letter strong{color:var(--ink); font-weight:600}
+  .sign{margin-top:34px; font-size:18px}
+  .sign .name{font-family:var(--font); font-weight:700; font-size:26px; letter-spacing:-.02em; color:var(--ink); margin-top:4px}
+
+  footer{padding:40px 0 80px; margin-top:40px; border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:12.5px; color:var(--muted)}
+  footer a{color:var(--accent)}
+  .cta{display:inline-block; margin-top:6px; font-family:var(--font); font-size:15px; font-weight:600;
+    color:var(--bg); background:var(--accent); padding:10px 20px; border-radius:999px}
+  .cta:hover{background:var(--accent-deep); color:var(--bg)}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <div class="brand">Keenan Gan</div>
+  <a class="back" href="./">&larr; portfolio</a>
+</div></nav>
+
+<header class="head"><div class="wrap">
+  <div class="eyebrow">Cover letter · Anthropic Product Support</div>
+  <h1>Keenan Gan</h1>
+  <p class="contact">
+    Singapore (citizen, no sponsorship needed)<br>
+    <a href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a> · +65 8828 7247 ·
+    <a href="https://www.linkedin.com/in/keenan-gan-4b0993188" target="_blank" rel="noopener">LinkedIn</a>
+  </p>
+</div></header>
+
+<div class="rule" style="max-width:680px;margin-left:auto;margin-right:auto"></div>
+
+<main class="wrap letter">
+  <p>For about a year I've run the entire operations of a small Bali art school on a fleet of Claude Code agents I built and maintain daily. That's 300 monthly active students and 11 teachers, run for one non-technical owner. What I'm proudest of is teaching that owner, who had never written a line of code, to use Claude Code herself. She now writes her own commits. That's the part that maps to this role: getting a non-technical person to actually succeed with an AI product, day after day, until she trusted it with her livelihood. I've done a year of that.</p>
+
+  <p>The piece most relevant to you is a human-in-the-loop WhatsApp support agent I built. It drafts every reply for a human to approve before anything sends, and it structurally can't send an unapproved message. When the school changed its number, I ran a migration audit that triaged 76 chats into 86 prioritized actions and caught 14 critical issues before they became upset parents. Because I run all of this on Claude every day, I've hit the real edges. I once spent two days tracking down a Claude Code agent that had gone silently dark, a stack of headless-auth <strong>401</strong>s with no alert, then built a health-checker so a silent failure couldn't hide that long again. That's the work I'd be doing here: someone owns the problem until it's fixed, then stops it recurring.</p>
+
+  <p>I'll be straight about the gap. I haven't held a formal support-queue title. The closest is Sleek, a banking-as-a-service fintech, where as an AE I grew a client base from 25 to 300, drove MAU from 10% to 30%, migrated 1,000+ clients onto a new platform, and resolved every product issue my clients hit, working across internal and external tech and customer-support teams, including DBS, to a positive NPS. That was full case lifecycle and CSAT under real deadline pressure. A founding hire does more than work the queue, and that's where I fit. I build the systems that make support scale: the knowledge base, the triage, the health checks that reduce contact rates. That function doesn't exist yet for APAC, and building it is the part I'm best at.</p>
+
+  <p>I already work the way Anthropic talks about building. I built a hard human-approval gate so the system can't act unsupervised, and I made a non-technical owner genuinely capable of running it. That's human-in-the-loop AI running a real production business. And because I run that business on Claude every day, I already have the product depth your enterprise customers will lean on. I'd like to put both to work for them.</p>
+
+  <div class="sign">
+    Sincerely,
+    <div class="name">Keenan</div>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <div>See the work behind every claim above:</div>
+  <a class="cta" href="./">View the portfolio &amp; demos &rarr;</a>
+  <div style="margin-top:22px">© 2026 Keenan Gan · Singapore · built &amp; measured solo.</div>
+</div></footer>
+</body>
+</html>
