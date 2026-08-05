@@ -84,6 +84,32 @@
   footer{padding:24px 0 50px; margin-top:18px; color:var(--muted); font-size:12.5px; border-top:1px solid var(--line)}
   footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
 
+  /* evidence tiers */
+  :root{ --doc:#2a5a8c; --doc-soft:#e6edf4; --self:#93690f; --self-soft:#f6efdc; }
+  .tier{display:inline-block; font-size:9px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; padding:2px 6px; border-radius:5px; vertical-align:1px; white-space:nowrap; cursor:default}
+  .tier.live{background:var(--auto-soft); color:var(--auto)}
+  .tier.doc{background:var(--doc-soft); color:var(--doc)}
+  .tier.self{background:var(--self-soft); color:var(--self)}
+  .stat .tier{margin-top:4px}
+
+  /* three-stat band */
+  .stats3{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:13px; overflow:hidden; margin:10px 0 0}
+  @media(max-width:680px){ .stats3{grid-template-columns:1fr} }
+  .stats3 .stat{background:var(--card); padding:14px 14px}
+
+  /* proof superscripts */
+  .fn{font-size:10px; font-weight:700; margin-left:2px}
+  .fn a{color:var(--accent-deep); text-decoration:none}
+  .fn a:hover{text-decoration:underline}
+
+  /* provenance */
+  .provenance-list{margin:0; padding-left:18px; font-size:12.5px; color:var(--muted); line-height:1.8}
+  .provenance-list li{margin-bottom:7px}
+  .provenance-list b{color:var(--ink2)}
+
+  /* print-only footnote block */
+  .printonly{display:none}
+
   /* print → clean two-page PDF */
   @media print{
     @page{ margin:13mm 13mm; }
@@ -111,6 +137,16 @@
     .grid{ break-inside:avoid }
     a{ color:var(--ink) }
     footer{ border:none; padding:8px 0 0 }
+
+    /* collapse chips + superscripts into one compact footnote list */
+    .tier{ display:none }
+    .stats3{ margin-top:6px }
+    .fn a{ color:var(--ink); text-decoration:none; font-size:8.5px }
+    .printonly{ display:block; margin-top:10px; padding-top:8px; border-top:1px solid var(--line); font-size:8.5px; color:var(--muted); line-height:1.5 }
+    .printonly h4{ font-size:8.5px; text-transform:uppercase; letter-spacing:.06em; margin:0 0 4px; font-weight:800 }
+    .printonly ol{ margin:0; padding-left:13px }
+    .printonly li{ margin-bottom:2px; word-break:break-all }
+    .printonly p{ margin:4px 0 0; font-size:8.5px }
   }
 </style>
 </head>
@@ -142,11 +178,17 @@
     </div>
 
     <div class="stats">
-      <div class="stat"><div class="n">~1<span class="u"> yr</span></div><div class="l">running a real business daily on Claude + Claude Code</div></div>
-      <div class="stat"><div class="n">25<span class="u"> → 300</span></div><div class="l">clients grown at Sleek · positive NPS</div></div>
-      <div class="stat"><div class="n">1,000<span class="u">+</span></div><div class="l">fintech clients migrated to a new platform</div></div>
-      <div class="stat"><div class="n">368<span class="u"> / 368</span></div><div class="l">reports delivered, zero failures</div></div>
-      <div class="stat"><div class="n">0</div><div class="l">customer messages sent without human approval</div></div>
+      <div class="stat"><div class="n">~1<span class="u"> yr</span></div><div class="l">running a real business daily on Claude + Claude Code</div><span class="tier doc" title="Backed by commit history and daily wiki logs, see Product depth on the Product Support page (product-support.html#depth)">Document</span></div>
+      <div class="stat"><div class="n">25<span class="u"> → 300</span></div><div class="l">clients grown at Sleek · positive NPS</div><span class="tier self" title="Keenan's own account of his Sleek tenure; not independently documented on this site">Self-reported</span></div>
+      <div class="stat"><div class="n">1,000<span class="u">+</span></div><div class="l">fintech clients migrated to a new platform</div><span class="tier self" title="Keenan's own account of his Sleek tenure; not independently documented on this site">Self-reported</span></div>
+      <div class="stat"><div class="n">368<span class="u"> / 368</span></div><div class="l">reports delivered, zero failures</div><span class="tier self" title="Keenan's own account of the report run; the underlying report batch is not public">Self-reported</span></div>
+      <div class="stat"><div class="n">0</div><div class="l">customer messages sent without human approval</div><span class="tier live" title="Enforced by the send gate (see architecture.html#proof) and shown in the CSR reel (see product-support.html#proof)">Live system</span></div>
+    </div>
+
+    <div class="stats stats3">
+      <div class="stat"><div class="n">300</div><div class="l">monthly active students run at CPID</div><span class="tier self" title="Keenan's own account of the school's enrollment; not independently documented on this site">Self-reported</span></div>
+      <div class="stat"><div class="n">~19</div><div class="l">systems in production across 7 business functions</div><span class="tier self" title="Keenan's own count of the automation estate; not independently documented on this site">Self-reported</span></div>
+      <div class="stat"><div class="n">~1<span class="u"> yr</span></div><div class="l">running the fleet daily, in production</div><span class="tier doc" title="Backed by commit history and daily wiki logs, see Product depth on the Product Support page (product-support.html#depth)">Document</span></div>
     </div>
   </div>
 </header>
@@ -169,12 +211,12 @@
       </div>
       <p class="sub">I lead operations and technology for a founder-led art school: 300 monthly active students (800 at peak, 5,000+ taught across its ~10 years), 11 staff. The whole school runs on the Claude Code agents I built, and I maintain them daily.</p>
       <ul>
-        <li>Built a <b>human-in-the-loop WhatsApp customer-support agent</b>. It drafts every reply in a crisp, kind support voice for a human to approve on Telegram before it sends. It can't send an unapproved message. <b>0</b> messages have ever gone out without a human's approval.</li>
-        <li>Ran a phone-number <b>migration triage audit</b> when the school changed its number: triaged 76 chats into 86 prioritized actions and caught <b>14 critical issues</b> before they reached customers.</li>
-        <li>Spent <b>two days</b> tracking down a Claude Code agent that had gone silently dark behind a stack of <b>headless-auth 401s</b> with no alert. I found the cause, then built the daily health-checker so a silent failure can't hide that long again.</li>
-        <li>Built the systems that let support scale. A self-maintaining knowledge base and a triage flow handle the routine load. On top of those, a <b>daily health-checker</b> is effectively my pager: it flags a silent failure the moment expected output goes missing, so I react before a customer has to report it. That keeps contact rates down as volume grows.</li>
-        <li>Shipped <b>~19 automations across 7 business functions</b> (~9 fully unattended). Delivered <b>368/368</b> eligible personalized reports with zero failures. Auto-logged <b>8,489</b> staff check-ins. Auto-graded 11 teachers monthly on ~16 KPIs, with a human able to override.</li>
-        <li><b>Onboarded the non-technical owner onto Claude Code.</b> She now writes and commits her own automation work.</li>
+        <li>Built a <b>human-in-the-loop WhatsApp customer-support agent</b>. It drafts every reply in a crisp, kind support voice for a human to approve on Telegram before it sends. It can't send an unapproved message. <b>0</b> messages have ever gone out without a human's approval.<sup class="fn"><a href="product-support.html#proof">[1]</a></sup></li>
+        <li>Ran a phone-number <b>migration triage audit</b> when the school changed its number: triaged 76 chats into 86 prioritized actions and caught <b>14 critical issues</b> before they reached customers.<sup class="fn"><a href="product-support.html#proof">[2]</a></sup></li>
+        <li>Spent <b>two days</b> tracking down a Claude Code agent that had gone silently dark behind a stack of <b>headless-auth 401s</b> with no alert. I found the cause, then built the daily health-checker so a silent failure can't hide that long again.<sup class="fn"><a href="product-support.html#depth">[3]</a></sup></li>
+        <li>Built the systems that let support scale. A self-maintaining knowledge base and a triage flow handle the routine load. On top of those, a <b>daily health-checker</b> is effectively my pager: it flags a silent failure the moment expected output goes missing, so I react before a customer has to report it. That keeps contact rates down as volume grows.<sup class="fn"><a href="product-support.html#scale">[4]</a></sup></li>
+        <li>Shipped <b>~19 automations across 7 business functions</b> (~9 fully unattended). Delivered <b>368/368</b> eligible personalized reports with zero failures. Auto-logged <b>8,489</b> staff check-ins. Auto-graded 11 teachers monthly on ~16 KPIs, with a human able to override.<sup class="fn"><a href="architecture.html#architecture">[5]</a></sup></li>
+        <li><b>Onboarded the non-technical owner onto Claude Code.</b> She now writes and commits her own automation work.<sup class="fn"><a href="architecture.html#claude-code">[6]</a></sup></li>
       </ul>
     </div>
 
@@ -199,7 +241,7 @@
       <ul>
         <li>Grew the client base <b>25 → 300</b> and drove MAU from <b>10% → 30%</b>.</li>
         <li>Migrated <b>1,000+ clients</b> onto a new banking-as-a-service platform.</li>
-        <li>Owned <b>every client product issue</b> across its full case lifecycle, under SLA pressure, to a <b>positive NPS</b>. I partnered with internal and external engineering and support teams, including DBS, to diagnose and resolve them.</li>
+        <li>Owned <b>every client product issue</b> across its full case lifecycle, under SLA pressure, to a <b>positive NPS</b>. I partnered with internal and external engineering and support teams, including DBS, to diagnose and resolve them.<sup class="fn"><a href="product-support.html#proof">[7]</a></sup></li>
         <li>Vetted legal and partnership agreements with financial institutions and handled compliance for Sleek's MPI licence.</li>
       </ul>
     </div>
@@ -274,6 +316,38 @@
     </div>
   </div>
 </section>
+
+<section class="noprint" id="provenance">
+  <div class="wrap">
+    <p class="kicker">Provenance</p>
+    <ol class="provenance-list">
+      <li><b>~1 yr</b> running the fleet daily, document: backed by commit history and daily wiki logs, see Product depth on the Product Support page (product-support.html#depth).</li>
+      <li><b>25 → 300</b> clients grown at Sleek, self-reported: Keenan's own account of his Sleek tenure.</li>
+      <li><b>1,000+</b> fintech clients migrated, self-reported: Keenan's own account of his Sleek tenure.</li>
+      <li><b>368 / 368</b> reports delivered, self-reported: Keenan's own account of the report run.</li>
+      <li><b>0</b> customer messages sent without approval, live system: enforced by the send gate on the Architecture page (architecture.html#proof), shown in the CSR reel on the Product Support page (product-support.html#proof).</li>
+      <li><b>300</b> monthly active students, self-reported: Keenan's own account of the school's enrollment.</li>
+      <li><b>~19</b> systems in production, self-reported: Keenan's own count of the automation estate.</li>
+      <li>Proof links [1]-[7] on the bullets above resolve to the Product Support and Architecture pages; see the footnotes on the printed PDF for the full URLs.</li>
+    </ol>
+  </div>
+</section>
+
+<div class="printonly">
+  <div class="wrap">
+    <h4>Footnotes</h4>
+    <ol>
+      <li>https://keenanlukegan.github.io/keenan-portfolio/product-support.html#proof</li>
+      <li>https://keenanlukegan.github.io/keenan-portfolio/product-support.html#proof</li>
+      <li>https://keenanlukegan.github.io/keenan-portfolio/product-support.html#depth</li>
+      <li>https://keenanlukegan.github.io/keenan-portfolio/product-support.html#scale</li>
+      <li>https://keenanlukegan.github.io/keenan-portfolio/architecture.html#architecture</li>
+      <li>https://keenanlukegan.github.io/keenan-portfolio/architecture.html#claude-code</li>
+      <li>https://keenanlukegan.github.io/keenan-portfolio/product-support.html#proof</li>
+    </ol>
+    <p>Evidence tiers (live system / document / self-reported) and full sourcing: https://keenanlukegan.github.io/keenan-portfolio/cv.html#provenance</p>
+  </div>
+</div>
 
 <footer>
   <div class="wrap">

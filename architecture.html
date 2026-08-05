@@ -153,6 +153,19 @@
   .contact a.alt{background:transparent; color:var(--ink); border:1px solid #d8d2c8}
   footer{padding:30px 0 60px; color:var(--muted); font-size:13px; border-top:1px solid var(--line)}
   footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+
+  /* evidence tiers */
+  :root{ --doc:#2a5a8c; --doc-soft:#e6edf4; --self:#93690f; --self-soft:#f6efdc; }
+  .tier{display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border-radius:5px; vertical-align:1px; white-space:nowrap; cursor:default}
+  .tier.live{background:var(--auto-soft); color:var(--auto)}
+  .tier.doc{background:var(--doc-soft); color:var(--doc)}
+  .tier.self{background:var(--self-soft); color:var(--self)}
+  .stat .tier{margin-top:5px}
+
+  /* provenance */
+  .provenance-list{margin:0; padding-left:18px; font-size:12.5px; color:var(--muted); line-height:1.8}
+  .provenance-list li{margin-bottom:7px}
+  .provenance-list b{color:var(--ink2)}
 </style>
 </head>
 <body>
@@ -189,12 +202,12 @@
 
 <div class="wrap">
   <div class="stats">
-    <div class="stat"><div class="n">~19<span class="u"> automations</span></div><div class="l">across 7 business functions, one architecture</div></div>
-    <div class="stat"><div class="n">~9 <span class="u">unattended</span></div><div class="l">run hands-off. The rest are gated by design</div></div>
-    <div class="stat"><div class="n">368<span class="u"> / 368</span></div><div class="l">personalized reports delivered, zero failures</div></div>
-    <div class="stat"><div class="n">8,489</div><div class="l">staff check-ins auto-logged (Mar to Jun)</div></div>
-    <div class="stat"><div class="n">~10 <span class="u">weeks</span></div><div class="l">live in production, health-checked daily</div></div>
-    <div class="stat"><div class="n">300</div><div class="l">monthly active students · peaked at 800 · 5,000+ taught in ~10 yrs</div></div>
+    <div class="stat"><div class="n">~19<span class="u"> automations</span></div><div class="l">across 7 business functions, one architecture</div><span class="tier self" title="Keenan's own count of the automation estate; not independently documented on this site">Self-reported</span></div>
+    <div class="stat"><div class="n">~9 <span class="u">unattended</span></div><div class="l">run hands-off. The rest are gated by design</div><span class="tier self" title="Keenan's own count of the automation estate; not independently documented on this site">Self-reported</span></div>
+    <div class="stat"><div class="n">368<span class="u"> / 368</span></div><div class="l">personalized reports delivered, zero failures</div><span class="tier self" title="Keenan's own account of the report run; the underlying report batch is not public">Self-reported</span></div>
+    <div class="stat"><div class="n">8,489</div><div class="l">staff check-ins auto-logged (Mar to Jun)</div><span class="tier self" title="Keenan's own count from the check-in log; the underlying log is not public">Self-reported</span></div>
+    <div class="stat"><div class="n">~10 <span class="u">weeks</span></div><div class="l">live in production, health-checked daily</div><span class="tier live" title="The daily health-check is shown running in the checker reel on the Product Support page (product-support.html#build)">Live system</span></div>
+    <div class="stat"><div class="n">300</div><div class="l">monthly active students · peaked at 800 · 5,000+ taught in ~10 yrs</div><span class="tier self" title="Keenan's own account of the school's enrollment; not independently documented on this site">Self-reported</span></div>
   </div>
 </div>
 
@@ -232,7 +245,7 @@
       <div class="layer"><h5>Surfaces</h5><ul><li>WhatsApp (in &amp; out)</li><li>Telegram (approvals)</li><li>Gmail</li><li>Per-student reports</li></ul></div>
       <div class="layer"><h5>People</h5><ul><li>Owner (approves)</li><li>11 teachers</li><li>~300 parents</li><li>Me (I build it)</li></ul></div>
     </div>
-    <div class="overlay">🩺 <b>Monitoring layer.</b> A daily health-check agent watches every automation. In ~10 weeks it caught a silent 6-minute execution timeout (10+ error emails a day) and reported the cause before anyone noticed.</div>
+    <div class="overlay">🩺 <b>Monitoring layer.</b> A daily health-check agent watches every automation. In ~10 weeks it caught a silent 6-minute execution timeout (10+ error emails a day) and reported the cause before anyone noticed. <span class="tier live" title="The same catch is shown running in the checker reel on the Product Support page (product-support.html#build)">Live system</span></div>
 
     <div class="brain" style="margin-top:14px">
       <p class="kicker" style="margin-bottom:8px">Knowledge layer · the second brain</p>
@@ -345,28 +358,28 @@
         <span class="tag human">Human-gated</span>
         <h3>The support agent that can't send unapproved</h3>
         <p>Every parent reply is drafted, pushed to the owner's Telegram (Approve / Edit / Reject), and sendable only once approved.</p>
-        <div class="m"><u>0</u> customer messages sent without a human reading them first</div>
+        <div class="m"><u>0</u> customer messages sent without a human reading them first <span class="tier live" title="Enforced by the send gate proven in code below (see See it run) and shown in the CSR reel on the Product Support page (product-support.html#proof)">Live system</span></div>
         <div class="refs">embodies ADR-03 (structural safety) · ADR-08 (autonomy dial)</div>
       </div>
       <div class="evcard">
         <span class="tag mixed">Automated · audited</span>
         <h3>Daily reminders that never double-text a parent</h3>
         <p>Phone-first opening plus three dedup rings, fired six mornings a week, with an independent auditor that pings me if a run goes quiet.</p>
-        <div class="m"><u>Six mornings a week</u>, every active student's family gets a class reminder, hands-off</div>
+        <div class="m"><u>Six mornings a week</u>, every active student's family gets a class reminder, hands-off <span class="tier self" title="Keenan's own account of the reminder cadence; not independently documented on this site">Self-reported</span></div>
         <div class="refs">embodies ADR-04 (phone-first) · ADR-05 (independent watcher) · ADR-06 (launchd)</div>
       </div>
       <div class="evcard">
         <span class="tag mixed">Automated · overridable</span>
         <h3>KPIs that grade themselves, with a human veto</h3>
         <p>~16 KPIs per teacher, each scored from a named live system, flowing into a compliant payslip. Subjective ones pass unless a human flags them.</p>
-        <div class="m"><u>11</u> teachers auto-graded monthly from 8+ live systems</div>
+        <div class="m"><u>11</u> teachers auto-graded monthly from 8+ live systems <span class="tier self" title="Keenan's own account of the KPI run; the gradebook is not public">Self-reported</span></div>
         <div class="refs">embodies ADR-07 (one source of truth) · ADR-08 (autonomy dial)</div>
       </div>
       <div class="evcard">
         <span class="tag mixed">Self-maintaining</span>
         <h3>A second brain the system keeps current</h3>
         <p>An LLM-maintained wiki organized by knowledge type, with a weekly linter that flags stale pages, broken links, and contradictions.</p>
-        <div class="m"><u>~11</u> knowledge categories, self-linting</div>
+        <div class="m"><u>~11</u> knowledge categories, self-linting <span class="tier self" title="Keenan's own count of the wiki's categories; not independently documented on this site">Self-reported</span></div>
         <div class="refs">embodies ADR-02 (self-maintaining knowledge) · ADR-01 (structure-as-architecture)</div>
       </div>
     </div>
@@ -378,14 +391,7 @@
   <div class="wrap">
     <p class="kicker">Proof</p>
     <h2>See it run</h2>
-    <p class="sec-intro">This is the gate, in code. It's what makes the no-unapproved-send guarantee structural rather than a promise. It's real and checkable, with no customer data in it. The end-to-end demo and annotated screenshots are landing this week.</p>
-
-    <div class="demo-slot">
-      <div class="play">▶</div>
-      <div class="t">90-second demo: the approval gate, end to end</div>
-      <div class="cap">Synthetic parent message → AI draft → Telegram <b>Approve</b> → send.</div>
-      <div style="margin-top:14px; display:inline-block; font-size:12px; font-weight:800; letter-spacing:.5px; color:#f0a387; background:rgba(240,163,135,.12); border:1px solid rgba(240,163,135,.4); padding:6px 14px; border-radius:999px">● BUILDING IN PROGRESS, DEMO LANDING THIS WEEK</div>
-    </div>
+    <p class="sec-intro">This is the gate, in code. It's what makes the no-unapproved-send guarantee structural rather than a promise. It's real and checkable, with no customer data in it.</p>
 
     <div class="codeproof">
       <div class="ct">ADR-03, proven. The queue the bot reads is the only thing it can send</div>
@@ -400,8 +406,6 @@
 <span class="cm">// A PENDING or REJECTED draft is structurally unsendable.</span></pre>
       <div class="cap">The actual shape of the gate. Real, checkable, and free of any customer data.</div>
     </div>
-
-    <p class="sec-intro" style="margin-top:18px; font-size:14.5px"><b>Also landing this week:</b> three annotated, redacted screenshots. The health-checker catching a 6-minute execution timeout, a teacher's KPI gradebook, and the auditor's "run didn't happen" alert.</p>
   </div>
 </section>
 
@@ -412,8 +416,8 @@
     <h2>I run a business on Claude every day</h2>
     <p class="sec-intro">I'm applying to help people succeed with Claude. For a year I've been a demanding user: a production fleet on Claude Code that a non-technical owner depends on every day. I've hit the edges and built around them.</p>
 
-    <div class="callout"><div class="em">🧑‍🏫</div><div><div class="tx">I taught a <b>non-technical owner to use Claude Code</b>. She now writes her own automation commits.</div><div class="v">verifiable in the repo's git history</div></div></div>
-    <div class="callout"><div class="em">📆</div><div><div class="tx"><b>~A year of daily use.</b> Session logs auto-append to a wiki every day, and the fleet runs every morning.</div><div class="v">commit history and daily logs</div></div></div>
+    <div class="callout"><div class="em">🧑‍🏫</div><div><div class="tx">I taught a <b>non-technical owner to use Claude Code</b>. She now writes her own automation commits. <span class="tier doc" title="Verifiable in the repo's git history">Document</span></div><div class="v">verifiable in the repo's git history</div></div></div>
+    <div class="callout"><div class="em">📆</div><div><div class="tx"><b>~A year of daily use.</b> Session logs auto-append to a wiki every day, and the fleet runs every morning. <span class="tier doc" title="Backed by commit history and daily wiki logs">Document</span></div><div class="v">commit history and daily logs</div></div></div>
 
     <p class="sec-intro" style="margin:26px 0 10px"><b>Field notes: real edge cases I diagnosed running Claude Code in production.</b> These are real edge cases I hit and fixed. <b>Click to open.</b></p>
 
@@ -459,6 +463,29 @@
     <p>I'm a Singaporean systems architect. For the past year I've built and run the entire operations of a small art school in Bali on a system I maintain myself: customer comms, deliverable production, staff performance, scheduling, reporting, the monitoring that watches all of it, and the second brain that remembers it.</p>
     <p>The hardest part was never the code. It was earning the trust of a non-technical owner who has to live with whatever the system does to her business and her customers. That's why everything starts gated, why nothing irreversible goes out without a sign-off, why every unattended job has a watcher, and why I treat the <i>structure</i>, not any one agent, as the thing worth getting right. None of this was theoretical. A non-technical owner only let me run her company on AI because nothing irreversible could go out without her sign-off.</p>
     <p>The day-to-day of that work is the support job: someone hits a wall with the product, I figure out why and get them moving again. When the system goes dark I'm the one who finds it. The two-day outage was me debugging a silent 401 stack until I had the cause, then building a daily health-checker so a silent failure can't hide that long again. That is on-call incident response, and I've been doing it for a year. I've done the customer-facing half too. At Sleek, a banking-as-a-service fintech, I grew a client base from 25 to 300, moved monthly active users from 10% to 30%, migrated over 1,000 clients onto a new platform, and resolved every product issue my clients hit, working across our own teams and external ones including DBS, to a positive NPS. I haven't held a support-queue title or carried a pager before. A founding APAC hire builds the support function rather than inheriting a queue, and I've already done both halves. I want to do this for Anthropic's users.</p>
+  </div>
+</section>
+
+<!-- PROVENANCE -->
+<section id="provenance">
+  <div class="wrap">
+    <p class="kicker">Provenance</p>
+    <h2 style="font-size:19px">Where each chipped number comes from</h2>
+    <ol class="provenance-list">
+      <li><b>~19</b> automations across 7 business functions, self-reported: Keenan's own count of the automation estate.</li>
+      <li><b>~9</b> unattended automations, self-reported: Keenan's own count of the automation estate.</li>
+      <li><b>368 / 368</b> personalized reports delivered, self-reported: Keenan's own account of the report run.</li>
+      <li><b>8,489</b> staff check-ins auto-logged, self-reported: Keenan's own count from the check-in log.</li>
+      <li><b>~10 weeks</b> live in production, health-checked daily, live system: shown running in the checker reel on the Product Support page (product-support.html#build).</li>
+      <li><b>300</b> monthly active students, self-reported: Keenan's own account of the school's enrollment.</li>
+      <li><b>6-minute execution timeout</b> caught by the monitoring layer, live system: the same catch is shown in the checker reel on the Product Support page (product-support.html#build).</li>
+      <li><b>0</b> customer messages sent without a human reading them first, live system: enforced by the send gate proven in code in See it run, shown in the CSR reel on the Product Support page (product-support.html#proof).</li>
+      <li><b>Six mornings a week</b> of class reminders, self-reported: Keenan's own account of the reminder cadence.</li>
+      <li><b>11</b> teachers auto-graded monthly, self-reported: Keenan's own account of the KPI run.</li>
+      <li><b>~11</b> knowledge categories, self-reported: Keenan's own count of the wiki's categories.</li>
+      <li><b>Non-technical owner writes her own commits</b>, document: verifiable in the repo's git history.</li>
+      <li><b>~A year of daily use</b>, document: backed by commit history and daily wiki logs.</li>
+    </ol>
   </div>
 </section>
 

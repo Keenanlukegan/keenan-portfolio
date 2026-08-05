@@ -151,6 +151,25 @@
   .contact a.alt{background:transparent; color:var(--ink); border:1px solid #d8d2c8}
   footer{padding:30px 0 60px; color:var(--muted); font-size:13px; border-top:1px solid var(--line)}
   footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+
+  /* reels */
+  .reel{margin-top:16px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:#0c0e11; aspect-ratio:16/9}
+  .reel.hero{margin-top:28px}
+  .reel video{width:100%; height:100%; display:block; object-fit:cover}
+  .reel-cap{font-size:12.5px; color:var(--muted); margin-top:8px}
+
+  /* evidence tiers */
+  :root{ --doc:#2a5a8c; --doc-soft:#e6edf4; --self:#93690f; --self-soft:#f6efdc; }
+  .tier{display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border-radius:5px; vertical-align:1px; white-space:nowrap; cursor:default}
+  .tier.live{background:var(--auto-soft); color:var(--auto)}
+  .tier.doc{background:var(--doc-soft); color:var(--doc)}
+  .tier.self{background:var(--self-soft); color:var(--self)}
+  .stat .tier{margin-top:5px}
+
+  /* provenance */
+  .provenance-list{margin:0; padding-left:18px; font-size:12.5px; color:var(--muted); line-height:1.8}
+  .provenance-list li{margin-bottom:7px}
+  .provenance-list b{color:var(--ink2)}
 </style>
 </head>
 <body>
@@ -183,17 +202,19 @@
       <a class="btn alt" href="tel:+6588287247">+65 8828 7247</a>
       <span class="status"><span class="dot"></span>Open to Anthropic · Singapore (hybrid)</span>
     </div>
+    <div class="reel hero"><video controls preload="none" poster="portfolio-assets/reels/hiring-manager.png"><source src="portfolio-assets/reels/hiring-manager.mp4" type="video/mp4"></video></div>
+    <p class="reel-cap">A one-minute walkthrough of the fleet, the health-checker, and why the work maps to Anthropic support.</p>
   </div>
 </header>
 
 <div class="wrap">
   <div class="stats">
-    <div class="stat"><div class="n">~1<span class="u"> year</span></div><div class="l">running a real business daily on Claude + Claude Code</div></div>
-    <div class="stat"><div class="n">25<span class="u"> → 300</span></div><div class="l">clients grown at Sleek · all product issues resolved, positive NPS</div></div>
-    <div class="stat"><div class="n">1,000<span class="u">+</span></div><div class="l">fintech clients migrated to a new BaaS platform</div></div>
-    <div class="stat"><div class="n">76 → 86 → <span class="u">14</span></div><div class="l">chats triaged → prioritized actions → critical issues surfaced</div></div>
-    <div class="stat"><div class="n">368<span class="u"> / 368</span></div><div class="l">eligible reports delivered, zero failures</div></div>
-    <div class="stat"><div class="n">0</div><div class="l">customer messages ever sent without a human approving first</div></div>
+    <div class="stat"><div class="n">~1<span class="u"> year</span></div><div class="l">running a real business daily on Claude + Claude Code</div><span class="tier doc" title="Backed by commit history and daily wiki logs, referenced in Product depth below">Document</span></div>
+    <div class="stat"><div class="n">25<span class="u"> → 300</span></div><div class="l">clients grown at Sleek · all product issues resolved, positive NPS</div><span class="tier self" title="Keenan's own account of his Sleek tenure; not independently documented on this site">Self-reported</span></div>
+    <div class="stat"><div class="n">1,000<span class="u">+</span></div><div class="l">fintech clients migrated to a new BaaS platform</div><span class="tier self" title="Keenan's own account of his Sleek tenure; not independently documented on this site">Self-reported</span></div>
+    <div class="stat"><div class="n">76 → 86 → <span class="u">14</span></div><div class="l">chats triaged → prioritized actions → critical issues surfaced</div><span class="tier self" title="Keenan's own account of the migration audit; the underlying triage sheet is not public">Self-reported</span></div>
+    <div class="stat"><div class="n">368<span class="u"> / 368</span></div><div class="l">eligible reports delivered, zero failures</div><span class="tier self" title="Keenan's own account of the report run; the underlying report batch is not public">Self-reported</span></div>
+    <div class="stat"><div class="n">0</div><div class="l">customer messages ever sent without a human approving first</div><span class="tier live" title="Enforced by the send gate shown in the code block below (see And I can build) and demonstrated in the CSR approval reel above (see Resolving real people's problems)">Live system</span></div>
   </div>
 </div>
 
@@ -252,6 +273,9 @@
     <h2>Resolving real people's problems, carefully</h2>
     <p class="sec-intro">Four concrete pieces of support-shaped work: a customer-support agent built around a human, a real triage audit, the fintech bridge, and onboarding a non-technical owner to self-sufficiency. All CPID data here is synthetic or redacted.</p>
 
+    <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/csr-reel.png"><source src="portfolio-assets/reels/csr-reel.mp4" type="video/mp4"></video></div>
+    <p class="reel-cap">Shows a parent message drafted, sent to Telegram for approval, then sent back to WhatsApp only after a human approves it.</p>
+
     <!-- WhatsApp agent flow -->
     <div class="bridge" style="margin-bottom:14px">
       <p style="margin:0 0 2px"><b>The human-in-the-loop WhatsApp customer-support agent.</b> Every parent reply is drafted by the system, pushed to a human on Telegram to approve, edit, or reject, and only then sent. It cannot send an unapproved message by construction: the send path can only read rows a human has already approved.</p>
@@ -286,14 +310,14 @@
         <span class="tag human">No unapproved send</span>
         <h3>Can't text a customer un-reviewed, by design</h3>
         <p>"Don't send without approval" is built into the data flow, so the code never has to remember it. The sender reads only human-approved, unsent rows, and nothing sets that state automatically.</p>
-        <div class="m"><u>0</u> messages sent without a human's eyes</div>
+        <div class="m"><u>0</u> messages sent without a human's eyes <span class="tier live" title="Enforced by the send gate shown in the code block below (see And I can build) and demonstrated in the reel above">Live system</span></div>
         <div class="refs">customer comms kept safe by the data flow, not by trusting the code to behave</div>
       </div>
       <div class="evcard">
         <span class="tag mixed">Teaching · enablement</span>
         <h3>Onboarded a non-technical owner onto Claude Code</h3>
         <p>The school's owner is non-technical. I taught her to use Claude Code herself, and she now writes and commits her own automation work. A lot of this role is teaching hard tools to people who don't write code. I've already done that.</p>
-        <div class="m"><u>Self-sufficient</u>: she commits her own work now</div>
+        <div class="m"><u>Self-sufficient</u>: she commits her own work now <span class="tier doc" title="Verifiable in the repo's git history">Document</span></div>
         <div class="refs">verifiable in the repo's git history · IBM Enterprise Design Thinking · Certified Scrum Master</div>
       </div>
     </div>
@@ -307,8 +331,8 @@
     <h2>I run a real business on Claude, every day</h2>
     <p class="sec-intro">A support specialist needs to know the product's edges cold. I've been a demanding user for about a year: a production fleet on Claude Code that a non-technical owner relies on every morning. The field notes below read like real second-tier tickets because I lived them. <b>Click any to open.</b></p>
 
-    <div class="callout"><div class="em">📆</div><div><div class="tx"><b>About a year of daily Claude Code use.</b> The fleet runs every morning, and session logs auto-append to a wiki every day.</div><div class="v">commit history + daily logs</div></div></div>
-    <div class="callout"><div class="em">🧑‍🏫</div><div><div class="tx">I onboarded a <b>non-technical owner onto Claude Code</b>, and she now authors her own commits.</div><div class="v">verifiable in the repo's git history</div></div></div>
+    <div class="callout"><div class="em">📆</div><div><div class="tx"><b>About a year of daily Claude Code use.</b> The fleet runs every morning, and session logs auto-append to a wiki every day. <span class="tier doc" title="Backed by commit history and daily wiki logs">Document</span></div><div class="v">commit history + daily logs</div></div></div>
+    <div class="callout"><div class="em">🧑‍🏫</div><div><div class="tx">I onboarded a <b>non-technical owner onto Claude Code</b>, and she now authors her own commits. <span class="tier doc" title="Verifiable in the repo's git history">Document</span></div><div class="v">verifiable in the repo's git history</div></div></div>
 
     <p class="sec-intro" style="margin:26px 0 10px"><b>Field notes: real edge cases I diagnosed running Claude Code in production.</b> These are real problems I hit and fixed.</p>
 
@@ -353,6 +377,9 @@
     <h2>Reduce contact rates. Uplevel team knowledge.</h2>
     <p class="sec-intro">Working the queue keeps you level with the volume. I'd rather cut the volume by building the systems that prevent tickets. I've built the machinery this role is meant to stand up: a knowledge base that maintains itself, a triage flow, and a watchdog that catches failures before customers feel them.</p>
 
+    <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/second-brain-reel.png"><source src="portfolio-assets/reels/second-brain-reel.mp4" type="video/mp4"></video></div>
+    <p class="reel-cap">Shows the self-maintaining knowledge base being read and updated, organized by knowledge type.</p>
+
     <div class="brain">
       <p class="kicker" style="margin-bottom:8px">Self-maintaining knowledge base · the "second brain"</p>
       <p style="margin:0 0 4px; color:var(--ink2); font-size:15px">An LLM-built, LLM-maintained wiki (Karpathy's pattern), organized by <b>knowledge type</b> rather than by author or date, so any new teammate inherits the institutional memory instead of rebuilding it cold. A weekly self-lint catches drift before it misleads anyone.</p>
@@ -388,13 +415,16 @@
     <h2>The systematic foundation under all of it</h2>
     <p class="sec-intro">The support work above sits on a deliberately engineered system. I lead with helping people, because that's the job. The help holds up because of the architecture underneath it. Here, briefly, is the technical depth that makes it hold.</p>
 
+    <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/checker-proof.png"><source src="portfolio-assets/reels/checker-proof.mp4" type="video/mp4"></video></div>
+    <p class="reel-cap">Shows the daily health-checker auditing the automation estate and writing its report unattended.</p>
+
     <div class="bridge">
       <p style="margin:0"><b>One operator, a structured system, a whole business.</b> CPID's operations run as a graph of single-purpose processors over shared data backbones, talking to WhatsApp and Telegram. A monitoring layer watches every automation, and a knowledge layer holds the system's memory. The numbers below are that system in production.</p>
       <div class="row">
-        <div class="cell"><div class="n">~19<span class="u"> autos</span></div><div class="l">across 7 business functions, one architecture</div></div>
-        <div class="cell"><div class="n">8,489</div><div class="l">staff check-ins auto-logged</div></div>
-        <div class="cell"><div class="n">6<span class="u"> mornings</span></div><div class="l">weekly class reminders · 3 dedup rings + auditor</div></div>
-        <div class="cell"><div class="n">11</div><div class="l">teachers auto-graded monthly on ~16 KPIs, human-overridable</div></div>
+        <div class="cell"><div class="n">~19<span class="u"> autos</span></div><div class="l">across 7 business functions, one architecture</div><span class="tier self" title="Keenan's own count of the automation estate; not independently documented on this site">Self-reported</span></div>
+        <div class="cell"><div class="n">8,489</div><div class="l">staff check-ins auto-logged</div><span class="tier self" title="Keenan's own count from the check-in log; the underlying log is not public">Self-reported</span></div>
+        <div class="cell"><div class="n">6<span class="u"> mornings</span></div><div class="l">weekly class reminders · 3 dedup rings + auditor</div><span class="tier self" title="Keenan's own account of the reminder cadence; not independently documented on this site">Self-reported</span></div>
+        <div class="cell"><div class="n">11</div><div class="l">teachers auto-graded monthly on ~16 KPIs, human-overridable</div><span class="tier self" title="Keenan's own account of the KPI run; the gradebook is not public">Self-reported</span></div>
       </div>
     </div>
 
@@ -423,6 +453,27 @@
     <h2>Why I want this seat</h2>
     <p>I'm a Singaporean operator. For the past year I've run the entire operations of a small art school in Bali on a fleet of Claude Code agents I built and maintain myself. They handle customer comms, deliverables, scheduling, staff performance, and reporting. A monitoring layer watches all of it and a wiki remembers it. Before that, at Sleek, I resolved every product issue my fintech clients hit, to a positive NPS. Before that, at Accenture, I presented innovation work to ministers and C-suite. Certified Scrum Master, IBM Enterprise Design Thinking, full professional English and native Mandarin.</p>
     <p>The hardest part of my work was never the code. It was earning the trust of a non-technical owner who has to live with whatever the system does to her business and her customers. That's why everything starts gated, why nothing irreversible goes out without a sign-off, and why I taught her to drive the tool herself rather than depend on me. That instinct, to make AI genuinely useful to a real person, carefully, with the human always in the loop, is the same instinct a good support specialist needs. Human in the loop, nothing irreversible without a sign-off, AI made genuinely useful to a real person: that's how I already work. I'd like to do it for your customers, on the front lines of safely delivering AI in APAC.</p>
+  </div>
+</section>
+
+<!-- PROVENANCE -->
+<section id="provenance">
+  <div class="wrap">
+    <p class="kicker">Provenance</p>
+    <h2 style="font-size:19px">Where each chipped number comes from</h2>
+    <ol class="provenance-list">
+      <li><b>~1 year</b> running a real business daily on Claude + Claude Code, document: backed by commit history and daily wiki logs, see Product depth.</li>
+      <li><b>25 → 300</b> clients grown at Sleek, positive NPS, self-reported: Keenan's own account of his Sleek tenure.</li>
+      <li><b>1,000+</b> fintech clients migrated to a new platform, self-reported: Keenan's own account of his Sleek tenure.</li>
+      <li><b>76 → 86 → 14</b> chats triaged into prioritized actions, self-reported: Keenan's own account of the migration audit.</li>
+      <li><b>368 / 368</b> eligible reports delivered, zero failures, self-reported: Keenan's own account of the report run.</li>
+      <li><b>0</b> customer messages ever sent without human approval, live system: enforced by the send gate in And I can build, demonstrated in the CSR reel in Resolving real people's problems.</li>
+      <li><b>Self-sufficient</b>: the owner now commits her own automation work, document: verifiable in the repo's git history.</li>
+      <li><b>~19</b> automations across 7 business functions, self-reported: Keenan's own count of the automation estate.</li>
+      <li><b>8,489</b> staff check-ins auto-logged, self-reported: Keenan's own count from the check-in log.</li>
+      <li><b>6 mornings</b> a week of class reminders, self-reported: Keenan's own account of the reminder cadence.</li>
+      <li><b>11</b> teachers auto-graded monthly on ~16 KPIs, self-reported: Keenan's own account of the KPI run.</li>
+    </ol>
   </div>
 </section>
 
