@@ -245,7 +245,7 @@
       <div class="layer"><h5>Surfaces</h5><ul><li>WhatsApp (in &amp; out)</li><li>Telegram (approvals)</li><li>Gmail</li><li>Per-student reports</li></ul></div>
       <div class="layer"><h5>People</h5><ul><li>Owner (approves)</li><li>11 teachers</li><li>~300 parents</li><li>Me (I build it)</li></ul></div>
     </div>
-    <div class="overlay">🩺 <b>Monitoring layer.</b> A daily health-check agent watches every automation. In ~10 weeks it caught a silent 6-minute execution timeout (10+ error emails a day) and reported the cause before anyone noticed. <span class="tier live" title="The same catch is shown running in the checker reel on the Product Support page (product-support.html#build)">Live system</span></div>
+    <div class="overlay">🩺 <b>Monitoring layer.</b> A daily health-check agent watches every automation. In ~10 weeks it caught a silent 6-minute execution timeout (13 failure emails across 6 sheets in 6 days) and reported the cause before anyone noticed. See the real report excerpt in <a href="#proof" style="color:inherit">Proof</a>. <span class="tier live" title="The same catch is shown running in the checker reel on the Product Support page (product-support.html#build)">Live system</span></div>
 
     <div class="brain" style="margin-top:14px">
       <p class="kicker" style="margin-bottom:8px">Knowledge layer · the second brain</p>
@@ -406,6 +406,87 @@
 <span class="cm">// A PENDING or REJECTED draft is structurally unsendable.</span></pre>
       <div class="cap">The actual shape of the gate. Real, checkable, and free of any customer data.</div>
     </div>
+
+    <p class="sec-intro" style="margin:30px 0 6px"><b>Three real catches, redacted.</b> Excerpts from the actual production reports these systems write every day. Staff first names are replaced with T1, T2, and so on in table order; no student names, phone numbers, internal IDs, or Drive/Sheet links are included.</p>
+
+    <div class="codeproof">
+      <div class="ct">The monitoring layer, proven. A live 6-minute execution timeout, caught in production, Apr 30, 2026</div>
+<pre>checker-agent/DAILY_CHECK_2026-04-30.md
+Date: Thursday, April 30, 2026
+Run by: cpid-daily-automation-check (scheduled, 8:10am UTC)
+
+## Section 3: Apps Script Health
+
+### NEW FAILURES: Schedule 2026 v2 (per-teacher sheets)
+Pattern: buildMonth exceeds the 6-min execution limit when fired
+by the document "open" trigger.
+
+| Script                  | Failures Detected         | Trigger |
+|--------------------------|----------------------------|---------|
+| Schedule 2026, T1        | 4 (Apr 25, 26, 28, 29)     | open    |
+| Schedule 2026, T2        | 3 (Apr 24, 27, 28)         | open    |
+| Schedule 2026, T3        | 1 (Apr 29)                 | open    |
+| Schedule 2026, T4        | 1 (Apr 28)                 | open    |
+| Schedule 2026, T5        | 1 (Apr 25)                 | open    |
+| Schedule 2026, T6        | 1 (Apr 25)                 | open    |
+| Template Schedule 2026   | 2 (Apr 24, both ~9am UTC)  | open    |
+
+Action: extract buildMonth out of the onOpen trigger. Affecting
+at least 6 of 10 per-teacher sheets.</pre>
+      <div class="cap">Real excerpt, redacted: six teacher names in the Script column replaced with T1 to T6 in table order. Counts, dates, and the buildMonth 6-minute detail are unchanged from the source. checker-agent/DAILY_CHECK_2026-05-01.md logs zero new failure emails once the fix shipped the next day. <span class="tier doc" title="Real excerpt from a dated production report, checker-agent/DAILY_CHECK_2026-04-30.md, not independently hosted">Document</span></div>
+    </div>
+
+    <div class="codeproof">
+      <div class="ct">ADR-07, proven. A real KPI scoring bug, caught and fixed, Jul 31, 2026</div>
+<pre>payroll/performance-report/HANDOFF.md, section dated 2026-07-31
+
+KPI #12 was decided by tab order, not by the teacher's work.
+fetchReportTimeliness_ read the first tab in the Score Entry
+sheet. Per-month tabs sit in inconsistent order and inconsistent
+naming, so which month got graded was luck:
+
+| Teacher | Tabs (sheet order)     | Tab read | #12 |
+|---------|-------------------------|----------|-----|
+| T1      | Jun 2026, Jul 2026      | June     | 0   |
+| T2      | Jun 2026, Jul 2026      | June     | 0   |
+| T3      | Jun 2026, July 2026     | June     | 0   |
+| T4      | July 2026, Jun 2026     | July     | 100 |
+
+T1's July tab is stamped 2026-07-14, 16:06 to 16:21: filed on
+time, a day before the 15th deadline, and scored 0 for it.
+
+Fix: a tab picker that matches by month token instead of sheet
+position, with a diagnosable failure instead of a silent wrong-
+month grade. Verified live: T1 #12 = 100, level 1 → 4, incentive
+Rp 427,133.</pre>
+      <div class="cap">Real excerpt, redacted: four teacher names replaced with T1 to T4 in table order. This is the KPI checker's own generated engineering report, not a screenshot of the gradebook itself: the gradebook is a private Google Sheet I could not capture and fully redact for a public page. Scores, dates, and the Rp 427,133 incentive are unchanged from the source. <span class="tier doc" title="Real excerpt from a dated production report, payroll/performance-report/HANDOFF.md, not independently hosted">Document</span></div>
+    </div>
+
+    <div class="codeproof">
+      <div class="ct">ADR-05, proven. The auditor's first live run-didn't-happen alert, Jun 10, 2026</div>
+<pre>checker-agent/DAILY_CHECK_2026-06-10.md
+Date: Wednesday, June 10, 2026
+Run by: manual backfill session on the Mac Mini, about 23:50 WITA
+
+Overall Status: ACTIVE FAILURES. The daily check itself silently
+stopped: no reports Jun 8, 9, or 10. Root cause: the checker was
+a Claude-app scheduled task on a laptop that sleeps, whose session
+can 401 silently, and whose reports only reach origin/main through
+manual sync commits. Nothing alerted, because every alerting path
+lived inside the thing that failed.
+
+Two fixes shipped tonight: this backfilled report, and a model-
+free launchd watchdog on the always-on Mac Mini
+(com.cpid.daily-check-auditor, 12:00 WITA daily) that Telegram-
+alerts when a day's report is missing or truncated. Its first
+live alert fired tonight, 23:43 WITA.
+
+## Section 1: Scheduled Tasks
+| Task                          | Host               | Status |
+|--------------------------------|--------------------|--------|
+| com.cpid.daily-check-auditor   | Mac Mini (launchd) | Installed, live-fire verified tonight (Telegram alert sent 23:43 WITA) |</pre>
+      <div class="cap">Real excerpt, redacted: no student or staff names appear in this excerpt, so none were removed. This is the auditor's actual first firing, the night it shipped, not a staged demo. checker-agent/DAILY_CHECK_2026-06-10.md is the backfilled report the auditor was built to stop from happening silently again. <span class="tier doc" title="Real excerpt from a dated production report, checker-agent/DAILY_CHECK_2026-06-10.md, not independently hosted">Document</span></div>
+    </div>
   </div>
 </section>
 
@@ -478,13 +559,15 @@
       <li><b>8,489</b> staff check-ins auto-logged, self-reported: Keenan's own count from the check-in log.</li>
       <li><b>~10 weeks</b> live in production, health-checked daily, live system: shown running in the checker reel on the Product Support page (product-support.html#build).</li>
       <li><b>300</b> monthly active students, self-reported: Keenan's own account of the school's enrollment.</li>
-      <li><b>6-minute execution timeout</b> caught by the monitoring layer, live system: the same catch is shown in the checker reel on the Product Support page (product-support.html#build).</li>
+      <li><b>6-minute execution timeout</b> caught by the monitoring layer, live system and document: shown in the checker reel on the Product Support page (product-support.html#build), and excerpted directly from the dated production report in Proof above.</li>
       <li><b>0</b> customer messages sent without a human reading them first, live system: enforced by the send gate proven in code in See it run, shown in the CSR reel on the Product Support page (product-support.html#proof).</li>
       <li><b>Six mornings a week</b> of class reminders, self-reported: Keenan's own account of the reminder cadence.</li>
       <li><b>11</b> teachers auto-graded monthly, self-reported: Keenan's own account of the KPI run.</li>
       <li><b>~11</b> knowledge categories, self-reported: Keenan's own count of the wiki's categories.</li>
       <li><b>Non-technical owner writes her own commits</b>, document: verifiable in the repo's git history.</li>
       <li><b>~A year of daily use</b>, document: backed by commit history and daily wiki logs.</li>
+      <li><b>KPI #12 tab-order bug</b>, document: real excerpt from the dated production handoff note in Proof above; teacher names redacted to T1 to T4.</li>
+      <li><b>Auditor's first live alert</b>, document: real excerpt from the dated production incident report in Proof above; this is the backfilled report that alert was built to prevent.</li>
     </ol>
   </div>
 </section>
