@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keenan Gan — One-person production org</title>
+<meta name="description" content="Keenan Gan runs an online art school (300 monthly active students) end-to-end on 39 systems he built solo — payroll engines, WhatsApp pipelines, KPI scoring, and a self-auditing watchdog mesh.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230E0F12'/%3E%3Cg fill='%23EDEDED'%3E%3Ccircle cx='8' cy='8' r='2.4'/%3E%3Ccircle cx='8' cy='16' r='2.4'/%3E%3Ccircle cx='8' cy='24' r='2.4'/%3E%3Ccircle cx='16' cy='16' r='2.4'/%3E%3Ccircle cx='22' cy='9' r='2.4'/%3E%3Ccircle cx='22' cy='23' r='2.4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Doto:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+
+/* ===== Tokens: night control-room, ported from keenan-showcase.html ===== */
+:root{
+  --paper:#EDEDED; --ink:#1C1C1C; --muted-lg:#7A7A7A; --muted:#636363; --line:rgba(28,28,28,.16);
+  /* night surface -- contrast-annotated per gnn-portfolio-night-redesign-plan.html's design-port
+     inventory: --night-ink on --night is the page's primary body-text pair (>7:1); --night-2nd on
+     --night is used only at >=14px / semi-bold Doto (>=4.5:1, verified against #0E0F12). */
+  --night:#0E0F12; --night-ink:#EDEDED; --night-2nd:#9BA2AD; --night-line:rgba(237,237,237,.14);
+  --glow:#A9C4FF;   /* the one non-neutral: cold signal light. >=4.5:1 on --night at chip/label sizes */
+  --pad:clamp(20px,5vw,64px); --maxw:1240px; --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:2px}
+.tl{font-family:'Doto',monospace;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+.topbar{position:absolute;inset:0 0 auto 0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pad);color:var(--night-ink)}
+.topbar a{text-decoration:none;opacity:.85;transition:opacity .2s}
+.topbar a:hover{opacity:1}
+.topbar nav{display:flex;gap:clamp(14px,3vw,34px)}
+.brand{font-weight:900;font-size:12px;white-space:nowrap}
+@media (max-width:640px){.topbar{flex-direction:column;align-items:flex-start;gap:10px;padding-top:18px}.topbar nav{gap:16px}}
+
+.hero{position:relative;min-height:100svh;background:var(--night);color:var(--night-ink);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-copy{position:relative;z-index:2;text-align:center;padding:0 var(--pad);max-width:1000px;transform:translateY(-13vh)}
+.hero-copy::before{content:"";position:absolute;inset:-18% -12%;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(14,15,18,.92),rgba(14,15,18,.55) 60%,transparent)}
+.hero-kicker{color:var(--glow);margin-bottom:14px}
+.hero-copy h1{font-size:clamp(2.35rem,6vw,4.6rem);font-weight:500;letter-spacing:-.04em;line-height:1.04;text-wrap:balance}
+.hero-sub{margin-top:22px;color:var(--night-2nd);font-size:clamp(.95rem,1.5vw,1.1rem);max-width:46ch;margin-inline:auto;text-wrap:pretty}
+.hero-readout{position:absolute;left:var(--pad);bottom:26px;z-index:2;color:var(--night-2nd);min-height:16px}
+.scrollcue{position:absolute;right:var(--pad);bottom:22px;z-index:2;text-decoration:none;color:var(--night-2nd);transition:color .2s}
+.scrollcue:hover{color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){
+  .hero-copy h1,.hero-sub{opacity:0;transform:translateY(16px);animation:rise 1s var(--ease) forwards}
+  .hero-copy h1{animation-delay:.35s} .hero-sub{animation-delay:.65s}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
+
+/* text fallback for the day-tape: always in the DOM (no-JS + screen readers, canvas is
+   aria-hidden); visually hidden once JS confirms the canvas drew, restored in print. */
+.tape-fallback{position:relative;z-index:2;list-style:none;color:var(--night-2nd);padding:100px var(--pad) 0;max-width:640px;margin:0 auto}
+.tape-fallback li{padding:2px 0}
+.tape-fallback .tape-fallback-head{color:var(--night-ink);margin-bottom:6px}
+html.js .tape-fallback{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0;margin:-1px}
+
+.ticker{background:var(--night);color:var(--night-2nd);border-top:1px solid var(--night-line);overflow:hidden;white-space:nowrap;padding:13px 0}
+.ticker-track{display:inline-flex;gap:0}
+.ticker span{padding-right:3.2em}
+.ticker em{font-style:normal;color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){.ticker-track{animation:tick 46s linear infinite}.ticker:hover .ticker-track{animation-play-state:paused}@keyframes tick{to{transform:translateX(-50%)}}}
+@media (prefers-reduced-motion:reduce){.ticker{overflow-x:auto}}
+
+section{padding:clamp(84px,12vh,150px) var(--pad)}
+.wrap{max-width:var(--maxw);margin:0 auto}
+.sec-label{color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:clamp(34px,5vh,60px)}
+.sec-label::before{content:"";width:7px;height:7px;background:currentColor}
+.dark .sec-label{color:var(--night-2nd)}
+
+.intro .big{font-size:clamp(1.7rem,4.1vw,3.6rem);font-weight:500;letter-spacing:-.035em;line-height:1.08;max-width:min(100%,1150px);text-wrap:pretty}
+.intro .after{margin-top:clamp(36px,6vh,64px);display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.intro .after p{max-width:52ch;color:var(--ink)}
+.intro .after .note{color:var(--muted);font-size:.92rem;max-width:40ch;justify-self:end;align-self:end;text-align:right}
+@media (max-width:760px){.intro .after{grid-template-columns:1fr}.intro .after .note{justify-self:start;text-align:left}}
+
+.systems h2,.estate h2,.operator h2{font-size:clamp(1.6rem,3.4vw,2.9rem);font-weight:500;letter-spacing:-.03em;line-height:1.06;text-wrap:balance}
+.systems .lede{margin-top:16px;color:var(--muted);max-width:52ch}
+.ledger{margin-top:clamp(40px,6vh,72px);border-top:1px solid var(--line)}
+.sysrow{border-bottom:1px solid var(--line)}
+.sysrow summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(150px,220px) 1fr auto;gap:18px;align-items:baseline;padding:clamp(20px,3vh,30px) 0;transition:opacity .2s}
+.sysrow summary::-webkit-details-marker{display:none}
+.sysrow summary:hover .sys-name{color:#000}
+.sys-meta{color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.sys-name{font-size:clamp(1.35rem,2.9vw,2.3rem);font-weight:500;letter-spacing:-.03em;line-height:1.08;transition:color .2s}
+.sys-x{font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:400;color:var(--muted-lg);align-self:center;transition:transform .35s var(--ease);line-height:1}
+.sysrow[open] .sys-x{transform:rotate(45deg)}
+.sys-panel{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:18px;padding:6px 0 clamp(30px,4vh,44px)}
+.sys-panel > div{grid-column:2}
+.sys-one{font-size:clamp(1.05rem,1.7vw,1.3rem);font-weight:500;letter-spacing:-.01em;max-width:62ch;text-wrap:pretty}
+.fieldnote{margin-top:22px;max-width:66ch}
+.fieldnote .tl{color:var(--muted);display:block;margin-bottom:8px}
+.fieldnote p{color:var(--ink);font-size:.98rem}
+.sys-metrics{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.sys-metrics div{background:var(--paper);padding:14px 16px}
+.sys-metrics dt{color:var(--muted);font-size:.78rem;letter-spacing:.02em}
+.sys-metrics dd{margin-top:6px;font-family:'Doto',monospace;font-weight:700;font-size:.95rem;line-height:1.35}
+.sys-metrics .tier-chip{margin-top:8px}
+@media (prefers-reduced-motion:no-preference){.sysrow[open] .sys-panel > div{animation:panel .5s var(--ease)}@keyframes panel{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}}
+@media (max-width:760px){.sysrow summary{grid-template-columns:1fr auto;grid-template-areas:"meta x" "name x"}.sys-meta{grid-area:meta;flex-direction:row;flex-wrap:wrap;gap:4px 14px}.sys-name{grid-area:name}.sys-x{grid-area:x}.sys-panel{grid-template-columns:1fr}.sys-panel > div{grid-column:1}.sys-metrics{grid-template-columns:1fr}}
+
+/* Evidence tiers, night-mapped: live -> mint #8fd6b8, document -> glow #A9C4FF, self-reported ->
+   muted amber #e0b76a, each >=4.5:1 on --night (#0E0F12) per the design-port spec. Those three
+   hex values are light pastels, correct for a dark backdrop -- but this generator's featured-
+   card metrics live inside .systems, a *light* "paper" section (matching the reference's own
+   light/dark alternating rhythm; .systems is not .dark). Light pastel text on the light --paper
+   background measures ~1.4:1, effectively invisible, so the base (default) rule below uses
+   deep/saturated variants of the same three hues, individually verified >=4.5:1 against --paper
+   (#EDEDED). The exact spec'd night colors are kept as the ".dark" override so a chip would
+   still render correctly if it ever ends up on a dark-section background. */
+.tier-chip{display:inline-block;font-family:'Doto',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:20px;border:1px solid;cursor:default;white-space:nowrap}
+.tier-chip.tier-live{color:#0b6740;border-color:rgba(11,103,64,.35);background:rgba(11,103,64,.08)}
+.tier-chip.tier-doc{color:#1d4ed8;border-color:rgba(29,78,216,.35);background:rgba(29,78,216,.08)}
+.tier-chip.tier-est{color:#92400e;border-color:rgba(146,64,14,.35);background:rgba(146,64,14,.08)}
+.dark .tier-chip.tier-live{color:#8fd6b8;border-color:rgba(143,214,184,.45);background:rgba(143,214,184,.08)}
+.dark .tier-chip.tier-doc{color:var(--glow);border-color:rgba(169,196,255,.45);background:rgba(169,196,255,.08)}
+.dark .tier-chip.tier-est{color:#e0b76a;border-color:rgba(224,183,106,.45);background:rgba(224,183,106,.08)}
+
+.estate .legend{display:flex;flex-wrap:wrap;gap:18px 28px;margin:26px 0 46px;color:var(--muted)}
+i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
+.legend i{margin-right:8px;vertical-align:baseline}
+.dot-live{background:var(--ink)}
+.dot-shipped{border:1.5px solid var(--ink)}
+.dot-build{background:linear-gradient(90deg,var(--ink) 50%,transparent 50%);border:1.5px solid var(--ink)}
+.dot-designed{border:1.5px dashed var(--ink)}
+.wall{columns:3;column-gap:48px}
+.wall li{list-style:none;break-inside:avoid;padding:11px 0;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:12px}
+.wall i{flex:none;position:relative;top:-1px}
+.wall .nm{font-size:.95rem;font-weight:500;letter-spacing:-.01em}
+.wall .ct{margin-left:auto;color:var(--muted);flex:none;font-size:10px}
+@media (max-width:1000px){.wall{columns:2}}
+@media (max-width:640px){.wall{columns:1}.wall .ct{display:none}}
+
+.dark{background:var(--night);color:var(--night-ink)}
+.doctrine .creed{border-top:1px solid var(--night-line)}
+.creed-item{border-bottom:1px solid var(--night-line);padding:clamp(44px,7vh,80px) 0;display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:18px}
+.creed-item .tl{color:var(--night-2nd);padding-top:14px}
+.creed-item h3{font-size:clamp(1.9rem,4.4vw,3.7rem);font-weight:500;letter-spacing:-.035em;line-height:1.04;text-wrap:balance}
+.creed-item p{margin-top:18px;color:var(--night-2nd);max-width:58ch;text-wrap:pretty}
+@media (max-width:760px){.creed-item{grid-template-columns:1fr;gap:10px}.creed-item .tl{padding-top:0}}
+
+.operator .cols{display:grid;grid-template-columns:7fr 4fr;gap:clamp(40px,6vw,90px);margin-top:clamp(36px,5vh,60px)}
+.operator .bio p{max-width:58ch;text-wrap:pretty}
+.operator .bio p + p{margin-top:18px}
+.career{margin-top:clamp(40px,6vh,64px);border-top:1px solid var(--line)}
+.career-row{display:grid;grid-template-columns:minmax(120px,180px) 1fr;gap:18px;padding:22px 0;border-bottom:1px solid var(--line)}
+.career-row .tl{color:var(--muted);padding-top:5px}
+.career-row h3{font-size:1.15rem;font-weight:600;letter-spacing:-.015em}
+.career-row p{margin-top:6px;color:var(--muted);font-size:.95rem;max-width:60ch}
+.facts{border:1px solid var(--line);padding:26px;align-self:start;position:sticky;top:26px}
+.facts .tl{color:var(--muted)}
+.facts ul{list-style:none;margin-top:18px}
+.facts li{padding:10px 0;border-bottom:1px solid var(--line);font-size:.95rem;display:flex;justify-content:space-between;gap:14px}
+.facts li:last-child{border-bottom:0}
+.facts li span:first-child{color:var(--muted)}
+@media (max-width:900px){.operator .cols{grid-template-columns:1fr}.facts{position:static}}
+@media (max-width:760px){.career-row{grid-template-columns:1fr;gap:6px}}
+
+.contact{padding:clamp(90px,14vh,170px) var(--pad) 40px}
+.contact h2{font-size:clamp(2.2rem,6vw,4.6rem);font-weight:500;letter-spacing:-.04em;line-height:1.03;text-wrap:balance;max-width:14ch}
+.contact .sub{margin-top:20px;color:var(--night-2nd);max-width:48ch;text-wrap:pretty}
+.contact-links{margin-top:clamp(40px,6vh,64px);display:flex;flex-wrap:wrap;gap:14px}
+.contact-links a{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--night-line);border-radius:999px;padding:15px 26px;text-decoration:none;font-weight:500;font-size:1rem;transition:background .25s,color .25s,border-color .25s}
+.contact-links a .tl{color:var(--night-2nd);transition:color .25s}
+.contact-links a:hover{background:var(--night-ink);color:var(--night);border-color:var(--night-ink)}
+.contact-links a:hover .tl{color:var(--night)}
+.colophon{margin-top:clamp(70px,10vh,110px);padding-top:24px;border-top:1px solid var(--night-line);display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-between;color:var(--night-2nd)}
+
+@media (prefers-reduced-motion:no-preference){html.js .rv{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}html.js .rv.in{opacity:1;transform:none}}
+
+/* ===== Print: honest color, sane pagination, no dead canvas, no near-empty trailing page ===== */
+@media print{
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+  /* Kill every CSS animation/transition in print: a static capture can otherwise sample content
+     mid-flight (e.g. the .rv reveal or the details-open .sys-panel reveal, both of which start
+     from opacity:0), rendering it invisible even though the JS beforeprint handler already set
+     the real DOM state (.sysrow open, etc.) correctly. */
+  *{animation:none !important;transition:none !important}
+  @page{margin:14mm 12mm}
+  .topbar,.scrollcue,.ticker,.hero-readout{display:none}
+  .hero{min-height:auto;padding:40px var(--pad) 30px}
+  .hero-copy{transform:none;position:static;padding:0}
+  .hero-copy::before{display:none}
+  #tape{display:none}
+  html.js .tape-fallback{position:static;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal;border:0;margin:0;padding:0 0 20px}
+  html.js .rv{opacity:1 !important;transform:none !important}
+  section{padding:26px var(--pad)}
+  .sysrow:not([open]) > *:not(summary){display:block !important}
+  .sys-panel > div{opacity:1 !important;transform:none !important}
+  .sysrow summary{cursor:default}
+  .sys-x{display:none}
+  .wall{columns:2}
+  .creed-item,.career-row,.sysrow,.contact-links{break-inside:avoid}
+  .facts{position:static}
+  /* The footer's colophon (3 short lines) was the one thing sized just wrong enough to have its
+     last line alone spill onto its own near-empty trailing page. Keep it one unbreakable unit. */
+  .colophon{break-inside:avoid}
+}
+
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand tl" href="#top">KEENAN GAN</a>
+  <nav class="tl" aria-label="Main">
+    <a href="#systems">SYSTEMS</a>
+    <a href="#doctrine">DOCTRINE</a>
+    <a href="#operator">OPERATOR</a>
+    <a href="#contact">CONTACT</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <canvas id="tape" aria-hidden="true"></canvas>
+  <ul class="tape-fallback tl" aria-hidden="false">
+    <li class="tape-fallback-head">24H SCHEDULE · ALL JOBS SHOWN</li>
+    <li><b>05:05</b> WA CLASS REMINDERS — MON-SAT</li><li><b>08:09</b> HEALTH CHECKER — DAILY</li><li><b>08:15</b> CSR CANARY — DAILY</li><li><b>09:00</b> REPORT SYNC — DAILY</li><li><b>12:00</b> AUDITOR — DAILY</li><li><b>00:00, 04:00, 08:00, 12:00, 16:00, 20:00</b> CRM AUTOLOG — 4-HOURLY</li>
+    <li><b>COWORK-BOT · ALWAYS ON</b></li>
+  </ul>
+  <div class="hero-copy">
+    
+    <h1>The school runs while everyone sleeps.</h1>
+    <p class="hero-sub">An online art school (300 monthly active students), run end-to-end on 39 systems by one operator, with every outbound message gated by a human.</p>
+  </div>
+  <p class="hero-readout tl" aria-live="off">ESTATE NOMINAL &middot; VERIFIED 2026-08-08, AT LAST BUILD</p>
+  <a class="scrollcue tl" href="#intro">SCROLL ↓</a>
+</section>
+
+<div class="ticker tl" role="marquee" aria-label="Verified estate statistics">
+  <div class="ticker-track" id="tickertrack">
+    <span>39 SYSTEMS · 17 LIVE · 12 SHIPPED · 8 IN BUILD · 2 DESIGNED</span>
+    <span>STUDENT REPORTS · 440 / 440, zero errors</span>
+    <span>APPS SCRIPT CLEAN STREAK · 21 consecutive days with 0 failure emails</span>
+    <span>FIRST JOB 05:06 LAST AUDIT 12:00</span>
+    <span>TEACHER KPIs SCORED FROM SOURCE · 21</span>
+  </div>
+</div>
+
+<section class="intro" id="intro">
+  <div class="wrap">
+    <p class="big rv">I'm Keenan Gan, operator and builder. For the past two years I've run CPID, an online art school with 300 monthly active students, as a one-person production org: payroll engines, WhatsApp send pipelines, KPI scoring, and a self-auditing watchdog mesh. Built solo, debugged live, kept running unattended.</p>
+    <div class="after rv">
+      <p>The throughline is the discipline unattended automation actually needs: treat every success claim as a hypothesis, gate every send behind a human, and make every failure a one-glance debug instead of a multi-day silent outage.</p>
+      <p class="note">Every number on this page traces to a commit, a log line, or a dated report.</p>
+    </div>
+  </div>
+</section>
+
+<section class="systems" id="systems">
+  <div class="wrap">
+    <p class="sec-label tl">SYS.INDEX · FEATURED 07 OF 39</p>
+    <h2 class="rv">7 systems, chosen for their failure stories.</h2>
+    <p class="lede rv">Anything can demo happily. These broke in production, against real students and real payroll, and here is what they became.</p>
+    <div class="ledger rv">
+
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>01 · MONITORING / RELIABILITY</span><span>LIVE</span></span>
+          <span class="sys-name">Daily Automation Health Checker + Watchdog Mesh</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A read-only daily agent that audits the entire automation estate and writes a dated health report, backstopped by deterministic launchd watchdogs that re-alert on Telegram if the report ever goes missing.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Production outcome: automations that once failed silently for days (Apr 11-13, Apr 20-29, May 8-18) now produce a single auditable daily artifact, with a 21-day clean streak visible at a glance. Engineering depth: this is observability done right under real failure modes — explicit anti-false-positive rules (cross-check Gmail against the Executions tab; reclassify stale counters after 14 days), wrapped in a model-free bash/launchd outer watchdog that has nothing that can 401. Layering a deterministic guarantee around a fallible LLM task is precisely the reliability thinking an AI support org needs.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Daily reports on disk</dt><dd>46 reports, 2026-04-10 through 2026-06-22<span class="tier-chip tier-doc" title="ls checker-agent/DAILY_CHECK_*.md | wc -l = 46 (verified); earliest, latest (verified)">DOCUMENT</span></dd></div><div><dt>Scheduled tasks monitored</dt><dd>4/4<span class="tier-chip tier-doc" title="checker-agent/ Section 1 'Scheduled Tasks (4/4 Running)' — all four task names verified in the section table">DOCUMENT</span></dd></div><div><dt>Apps Script clean streak (as of latest run)</dt><dd>21 consecutive days with 0 failure emails<span class="tier-chip tier-live" title="checker-agent/ Section 3 'Zero failures — 21 days clean' delta table '0 (21 days clean)' — verified">LIVE SYSTEM</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>02 · CSR</span><span>IN PROGRESS</span></span>
+          <span class="sys-name">CSR Cycler (WhatsApp &lt;-&gt; Telegram approval loop)</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A Playwright-over-CDP loop that reads unread WhatsApp chats into a Sheet, routes each as a draft to the operator's Telegram for approve/edit/reject, then sends approved replies back through WhatsApp Web with post-send verification.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Production outcome: it handles templated CSR replies at scale without ever handing send authority to a bot — every reply is human-approved in Telegram before it leaves, and the cycler re-marks chats unread so it never hijacks the operator's own queue. Engineering depth: WhatsApp Web's DOM actively lies (it dropped message-in/out classes overnight, so direction is keyed off bubble geometry), sends are verified by re-reading the DOM (~8s poll), the loop is gated behind a file mutex when other jobs drive the same session, and a daily canary guards it. This is textbook human-in-the-loop AI ops on a hostile surface.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>DOM verify timeout before logging FAILED</dt><dd>~8s poll (verifySent)<span class="tier-chip tier-doc" title="verifySent(page, body, timeoutMs = 8000)">DOCUMENT</span></dd></div><div><dt>Canary cadence</dt><dd>Daily 08:15<span class="tier-chip tier-doc" title="Hour 8 Minute 15">DOCUMENT</span></dd></div><div><dt>Telegram approval latency floor</dt><dd>~60s (Apps Script min trigger interval)<span class="tier-chip tier-doc" title="'Latency floor: ~60s (Apps Script's minimum trigger interval). Acceptable for human-in-the-loop approval'">DOCUMENT</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>03 · PERFORMANCE / PAYROLL</span><span>SHIPPED</span></span>
+          <span class="sys-name">Teacher KPI Performance Engine (Direct-Source Dispatcher)</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A scoring engine that resolves each of 21 teacher KPIs from its true canonical source via a per-KPI fallback dispatcher, after the single legacy data source died and silently zeroed everyone's performance pay.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Production outcome: when a deprecated sheet permanently emptied, every teacher silently scored 'no data' and earned Rp 0 on performance pay — a live incident with real money on the line. Engineering depth: the fix is a resolveKpiScore_ fallback chain (true source → manual entry → graceful N/A) with a resolvedSource audit column that makes every score's provenance debuggable at a glance, and it was made purely HTTP-callable so a future cloud cutover needs no rework. Resilient fallbacks plus provenance-as-observability is exactly the post-incident pattern an AI support team prizes.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>KPIs wired in the architecture</dt><dd>21 total (6 auto-scored direct + 1 data-surfaced #19 + 14 manual entry)<span class="tier-chip tier-doc" title=": 'Total this session: 6 auto-scored direct + 1 data-surfaced (#19) + 14 manual entry = 21 KPIs all plugged in' — verified verbatim">DOCUMENT</span></dd></div><div><dt>Active teachers scored</dt><dd>10 active (TEACHER_ROSTER active:true), 3 inactive/new (Trustha, Felisia, Rasidah)<span class="tier-chip tier-doc" title=":345 TEACHER_ROSTER — verified: 10 entries active:true + 3 active:false (TRUSTHA, FELISIA, RASIDAH)">DOCUMENT</span></dd></div><div><dt>Shipped</dt><dd>2026-04-29, commit b7a3669 on origin/main<span class="tier-chip tier-doc" title="git: b7a3669 'KPI Architecture v1: direct-source dispatcher + Manual KPI Entry tab' dated 2026-04-29, confirmed contained in origin/main">DOCUMENT</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>04 · CRM</span><span>LIVE</span></span>
+          <span class="sys-name">CRM Autolog (WhatsApp -&gt; CRM auto-ingest)</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A launchd job that every 4 hours opens unread WhatsApp chats, classifies and logs the latest messages into a CRM sheet with a replied/unreplied flag, then re-marks each chat unread to preserve the follow-up queue.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Production outcome: it turns a live WhatsApp inbox into structured CRM rows automatically, so leads and complaints stop falling through the cracks. Engineering depth: this is a real post-incident story — reading a chat marks it read on the linked phone, which once caused a 'my WhatsApp read itself for days' outage. The fix shows operational rigor: the old re-mark used a synthetic hover that failed ~100% of runs silently, rewritten to a right-click menu with explicit badge verification, retry, and a state-file record of any miss. Turning an invisible failure into an auditable one is the support-engineering instinct.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Cadence</dt><dd>Every 4 hours (14400s)<span class="tier-chip tier-live" title="StartInterval 14400">LIVE SYSTEM</span></dd></div><div><dt>Re-mark-unread fix + re-enable date</dt><dd>2026-06-15<span class="tier-chip tier-doc" title="memory/: 'FIXED re-enabled 2026-06-15'">DOCUMENT</span></dd></div><div><dt>Old re-mark failure rate before fix</dt><dd>~100% of runs<span class="tier-chip tier-doc" title="memory/: 'That re-mark was failing 100% of runs'">DOCUMENT</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>05 · REPORTING</span><span>SHIPPED</span></span>
+          <span class="sys-name">Art Journey Student Report Generator</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A standalone Apps Script that clones one parent-facing report sheet per active student from a master template and fills it with each child's real data — profile, level, artworks, scores, payment, history, certifications.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Production outcome: it generated 440 individualized parent reports in one batch with zero errors, turning scattered source sheets into a self-updating magazine-style document per student and cutting the constant stream of parent questions. Engineering depth: robustness against platform limits is treated as first-class — merge-free layout to stay under Apps Script's 6-minute cap, embedding Drive images as cell-image VALUES (not =IMAGE formulas that need an un-automatable access grant), reading upstream QUERY sources instead of stale IMPORTRANGE read-caches, and a resumable chunked driver for the batch. This is exactly the platform-quirk fluency a support engineer brings to customer escalations.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Reports generated</dt><dd>440 / 440, zero errors<span class="tier-chip tier-doc" title="student-report/ line 3: 'All 440 active students have reports — full batch run 2026-05-25... 440/440, zero errors' (VERIFIED)">DOCUMENT</span></dd></div><div><dt>Full batch run date</dt><dd>2026-05-25<span class="tier-chip tier-doc" title="student-report/ line 3: 'full batch run 2026-05-25 via the resumable chunked driver' (VERIFIED)">DOCUMENT</span></dd></div><div><dt>Report tabs per student</dt><dd>5 tabs<span class="tier-chip tier-doc" title="student-report/ §1 header 'What a student report contains (5 tabs)' lists Art Journey, Drawings &amp; Score, Art Journaling, Class, _Sources (VERIFIED)">DOCUMENT</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>06 · AGENTIC OS</span><span>LIVE</span></span>
+          <span class="sys-name">Cowork-Bot — Telegram-to-Claude Agentic Bridge</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A long-polling Telegram bot that routes each message to a fresh headless Claude Code run inside the repo, turning chat into a permission-gated agent over the whole automation estate.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Production outcome: a solo operator can drive the entire repo from a phone without exposing a dangerous shell. Engineering depth: each message becomes a headless `claude --print` in the repo working dir, so the agent auto-inherits every CLAUDE.md rule and the settings.json allowlist — no second agent to secure. The agent-safety judgment is explicit: chat-id allowlisting, deliberately NOT using --dangerously-skip-permissions, a 10-minute timeout, and crash-respawn daemonization. Bounding an agent by the same permission gates as the human operator is the right way to ship autonomy safely.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Agent timeout per message</dt><dd>10 minutes<span class="tier-chip tier-doc" title="header L24: 'Claude timeout (&gt;10 min): aborted' + = 600">DOCUMENT</span></dd></div><div><dt>Crash respawn delay</dt><dd>30s (launchd KeepAlive Crashed:true)<span class="tier-chip tier-doc" title="header L30: 'Crashes auto-respawn after 30s'">DOCUMENT</span></dd></div><div><dt>Telegram message cap handled</dt><dd>4000 chars (under 4096 API limit)<span class="tier-chip tier-doc" title="L41: 'const TELEGRAM_MAX = 4000'">DOCUMENT</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>07 · SCHEDULING / MESSAGING</span><span>LIVE</span></span>
+          <span class="sys-name">CPID Daily WhatsApp Class-Reminder Sender</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">An unattended morning job that reads the day's roster and sends each guardian a per-student WhatsApp reminder by driving WhatsApp Web through Playwright — with three dedup guards and post-send DOM verification.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Production outcome: a daily manual chore became an unattended launchd job covering a roster that scales by weekday (Wed 42, Sat 52). Engineering depth: this is the defensive-correctness story support engineers live in — WhatsApp Web's DOM lies (chats mis-open, keystrokes get eaten, history renders in two locales), so a naive sender double-sends to parents or logs SENT for messages that never landed. Phone-first chat opening, three concentric dedup guards, and post-send DOM verification were each paid for by a real mis-send. Treating 'I pressed Enter' as a hypothesis, not a fact, is exactly the rigor flaky third-party surfaces demand.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Schedule cadence</dt><dd>05:06 WITA, Mon-Sat (Weekday 1-6)<span class="tier-chip tier-live" title=": 'Runs at 05:06 WITA Monday-Saturday... Weekday 1=Mon... 6=Sat'">LIVE SYSTEM</span></dd></div><div><dt>Roster size (verified)</dt><dd>53 students across 7 teachers (one run); Wed=42 / Thu=41 / Fri=38 / Sat=52 across 10 teachers<span class="tier-chip tier-doc" title="memory/: '53 students across 7 teachers appeared correctly' and 'Verified Wed=42, Thu=41, Fri=38, Sat=52 students across all 10 teachers'">DOCUMENT</span></dd></div><div><dt>Teacher source schedules</dt><dd>10 per-teacher Schedule 2026 sheets<span class="tier-chip tier-doc" title="JADWAL_SHEETS array (JOE, NABILA, CHRIS, EDY, TAUFIQ, MARIO, TYA, NILNA, DINA, SLAMET) — 10 entries">DOCUMENT</span></dd></div></dl>
+        </div></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="estate" id="estate">
+  <div class="wrap">
+    <p class="sec-label tl">FULL ESTATE · INVENTORY</p>
+    <h2 class="rv">All 39 systems, by status.</h2>
+    <p class="legend tl rv">
+      <span><i class="dot-live"></i>LIVE 17</span>
+      <span><i class="dot-shipped"></i>SHIPPED 12</span>
+      <span><i class="dot-build"></i>IN BUILD 8</span>
+      <span><i class="dot-designed"></i>DESIGNED 2</span>
+    </p>
+    <ul class="wall rv">
+<li><i class="dot-live"></i><span class="nm">Autonomous Watchdog Mesh (launchd self-healing layer)</span><span class="ct tl">Watchdog / Reliability</span></li><li><i class="dot-live"></i><span class="nm">Checker-Agent Daily Health Watchdog</span><span class="ct tl">Watchdog / Observability</span></li><li><i class="dot-live"></i><span class="nm">Cowork-Bot — Telegram-to-Claude Agentic Bridge</span><span class="ct tl">Agentic OS</span></li><li><i class="dot-live"></i><span class="nm">CPID Daily WhatsApp Class-Reminder Sender</span><span class="ct tl">Scheduling / Messaging</span></li><li><i class="dot-live"></i><span class="nm">CRM Autolog (WhatsApp -&gt; CRM auto-ingest)</span><span class="ct tl">CRM</span></li><li><i class="dot-live"></i><span class="nm">CSR Exact-Match WhatsApp Auto-Reply</span><span class="ct tl">CSR</span></li><li><i class="dot-live"></i><span class="nm">Cuti &amp; Holiday Reminder Gate (Kalender tab)</span><span class="ct tl">Scheduling / Admin controls</span></li><li><i class="dot-live"></i><span class="nm">Daily Automation Health Checker + Watchdog Mesh</span><span class="ct tl">Monitoring / Reliability</span></li><li><i class="dot-live"></i><span class="nm">Dynamic Roster Layout Discovery (REMINDER MASTER scanner)</span><span class="ct tl">Data integrity / Sheets</span></li><li><i class="dot-live"></i><span class="nm">Notes Masalah Sync &amp; Auto-Classifier</span><span class="ct tl">Reporting</span></li><li><i class="dot-live"></i><span class="nm">Schedule 2026 Session Counter, Image Extractor &amp; Class-Type Classifier</span><span class="ct tl">Payroll</span></li><li><i class="dot-live"></i><span class="nm">Schedule 2026 Slot-Based Jadwal Engine + Auto Month-Builder</span><span class="ct tl">Scheduling</span></li><li><i class="dot-live"></i><span class="nm">Teacher Score Entry Pipeline</span><span class="ct tl">Teaching Ops</span></li><li><i class="dot-live"></i><span class="nm">Telegram Teacher-Attendance Bot + Monthly Attendance Report</span><span class="ct tl">Attendance</span></li><li><i class="dot-live"></i><span class="nm">Upload Auto-Timestamp &amp; Compliance Color Engine</span><span class="ct tl">Scheduling</span></li><li><i class="dot-live"></i><span class="nm">Upload Recap &amp; REMINDER Mirror (Derived Read-Layer)</span><span class="ct tl">Scheduling</span></li><li><i class="dot-live"></i><span class="nm">WA Lead-Reply Log — Daily Email Summary</span><span class="ct tl">CSR / Reporting</span></li><li><i class="dot-shipped"></i><span class="nm">Art Journey Student Report Generator</span><span class="ct tl">Reporting</span></li><li><i class="dot-shipped"></i><span class="nm">Legacy-to-Schedule-2026 Migration Tooling</span><span class="ct tl">Scheduling</span></li><li><i class="dot-shipped"></i><span class="nm">Notion → Sheets Migration (Level Up Trackers)</span><span class="ct tl">Data Migration</span></li><li><i class="dot-shipped"></i><span class="nm">PA Performance Tracker</span><span class="ct tl">Payroll / HR</span></li><li><i class="dot-shipped"></i><span class="nm">Sg Syllabus Pinterest Sync</span><span class="ct tl">Content Pipeline</span></li><li><i class="dot-shipped"></i><span class="nm">Student Report WhatsApp Delivery</span><span class="ct tl">Messaging</span></li><li><i class="dot-shipped"></i><span class="nm">Syllabus Decision Board</span><span class="ct tl">Teaching Ops</span></li><li><i class="dot-shipped"></i><span class="nm">Teacher KPI Performance Engine (Direct-Source Dispatcher)</span><span class="ct tl">Performance / Payroll</span></li><li><i class="dot-shipped"></i><span class="nm">Teacher Pay Session Counter</span><span class="ct tl">Payroll</span></li><li><i class="dot-shipped"></i><span class="nm">Teacher Upload KPI Compliance Reporter</span><span class="ct tl">KPI</span></li><li><i class="dot-shipped"></i><span class="nm">To-Do Report Bot</span><span class="ct tl">PA / Reporting</span></li><li><i class="dot-shipped"></i><span class="nm">WhatsApp Number-Migration Toolkit</span><span class="ct tl">Migration</span></li><li><i class="dot-build"></i><span class="nm">Agentic OS — 6 Chief-Officer Department Mesh</span><span class="ct tl">Agentic OS / Architecture</span></li><li><i class="dot-build"></i><span class="nm">CPID Marketing Engine (Asset Pipeline + Agent-Fleet Control Plane)</span><span class="ct tl">Marketing Automation</span></li><li><i class="dot-build"></i><span class="nm">CSR Cycler (WhatsApp &lt;-&gt; Telegram approval loop)</span><span class="ct tl">CSR</span></li><li><i class="dot-build"></i><span class="nm">Drive Compliance Scanner</span><span class="ct tl">Compliance / Drive</span></li><li><i class="dot-build"></i><span class="nm">KPI Auto-Scoring Pipeline (Option B)</span><span class="ct tl">Payroll</span></li><li><i class="dot-build"></i><span class="nm">Self-Improving Skills Convention</span><span class="ct tl">Agentic OS / Reliability</span></li><li><i class="dot-build"></i><span class="nm">TC Performance &amp; Pay Report (level-based incentive engine)</span><span class="ct tl">Payroll</span></li><li><i class="dot-build"></i><span class="nm">Teacher Upload-Time Tracker</span><span class="ct tl">Compliance / Scheduling</span></li><li><i class="dot-designed"></i><span class="nm">Cipi — Carla's One-Inbox Personal Assistant</span><span class="ct tl">Agentic OS / PA</span></li><li><i class="dot-designed"></i><span class="nm">Meta Ads Creative-QC Gate &amp; Source-Tagging</span><span class="ct tl">Ad Governance</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="doctrine dark" id="doctrine">
+  <div class="wrap">
+    <p class="sec-label tl">DOCTRINE · WHAT PRODUCTION TAUGHT ME</p>
+    <div class="creed">
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE ESTATE</span>
+        <div>
+          <h3>Automations lie.</h3>
+          <p>WhatsApp Web's DOM drops its classes overnight. Spreadsheet read-caches go stale. Auth fails with a silent 401 and nothing screams. Every system here treats "success" as a hypothesis and re-verifies it against the source: the rendered bubble, the unread badge, the file on disk.</p>
+        </div>
+      </div>
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE HUMANS</span>
+        <div>
+          <h3>No machine speaks to a human unapproved.</h3>
+          <p>Every outbound message drafts to a person first: approve, edit, or reject on Telegram before anything sends. Zero unapproved messages have ever gone out. Not a policy document; an architecture.</p>
+        </div>
+      </div>
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE NIGHT</span>
+        <div>
+          <h3>A failure is one glance away.</h3>
+          <p>Dated health reports, provenance-stamped scores, and deterministic watchdogs with no model and nothing that can 401. If expected output goes missing, my phone rings before a student, a parent, or a teacher ever notices.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="operator" id="operator">
+  <div class="wrap">
+    <p class="sec-label tl">THE OPERATOR</p>
+    <h2 class="rv">Ten years of work, pointed at one question.</h2>
+    <div class="cols">
+      <div class="bio rv">
+        <p>Innovation consulting at Accenture. Fintech product at Sleek, where I owned every client's product issue under SLA pressure, to a positive NPS. Then operations, running a real school with real payroll and real parents. All of it now serves one question: how much of a business can one careful operator run with agents?</p>
+        <p>The answer so far is CPID's estate. It is also the owner herself, a non-technical founder I onboarded onto Claude Code, who now writes and commits her own automation work.</p>
+        <div class="career">
+          <div class="career-row">
+            <span class="tl">2023 – NOW</span>
+            <div>
+              <h3>CPID · COO &amp; CTO · Bali</h3>
+              <p>Founder-led online art school: 300 monthly active students, 11 staff. Built and maintain the entire automation estate; every system on this page. Debugged a silently-dark agent behind stacked headless-auth 401s, then built the health checker so a silent failure can never hide that long again.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2022 – 2023</span>
+            <div>
+              <h3>Accenture · Innovation Consultant · Singapore</h3>
+              <p>Ran innovation-hub operations and led workshops for enterprise clients, C-suite through ministers; drove open-innovation ventures connecting corporates with emerging tech.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2021 – 2022</span>
+            <div>
+              <h3>Sleek · Account Executive, Banking-as-a-Service · Singapore</h3>
+              <p>Grew the client base 25 → 300, migrated 1,000+ clients to a new platform, and owned every product issue across its full case lifecycle, under SLA, to a positive NPS, partnering with engineering at Sleek and DBS.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2019</span>
+            <div>
+              <h3>Accenture Innovation Hub · Singapore</h3>
+              <p>Led an AI + data-analytics case study for an MNC oil &amp; gas client; presented live demos to C-suite across multiple MNCs.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="facts rv" aria-label="Quick facts">
+        <span class="tl">STATUS REGISTER</span>
+        <ul><li><span>Citizenship</span><span>Singaporean</span></li><li><span>Base</span><span>Bali ↔ Singapore</span></li><li><span>Timezone</span><span>WITA / SGT</span></li><li><span>Stack</span><span>Claude Code · Apps Script · Playwright · launchd</span></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<footer class="contact dark" id="contact">
+  <div class="wrap">
+    <p class="sec-label tl">CONTACT · CHANNEL OPEN</p>
+    <h2 class="rv">The estate runs itself. I'm free to talk.</h2>
+    <p class="sub rv">Whether you're hiring an operator, evaluating a partner, or want systems like these in your own business: the fastest way to find out is a conversation.</p>
+    <div class="contact-links rv">
+      <a href="mailto:keenanlukegan@gmail.com"><span class="tl">EMAIL</span>keenanlukegan@gmail.com</a>
+      <a href="tel:+6588287247"><span class="tl">CALL</span>+65 8828 7247</a>
+      <a href="https://linkedin.com/in/keenan-gan-4b0993188" rel="noopener"><span class="tl">LINKEDIN</span>keenan-gan</a>
+    </div>
+    <div class="colophon tl">
+      <span>© 2026 KEENAN GAN · SINGAPORE ↔ BALI</span>
+      <span>BUILT BY HAND, WITH CLAUDE CODE</span>
+      <span>EVERY NUMBER TRACES TO A COMMIT, A LOG LINE, OR A DATED REPORT</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Force every collapsed system card open for print/PDF export, then restore prior state after.
+// A pure-CSS override (display:block on .sysrow's children) is not reliable across browser
+// versions -- current Chrome's native <details> open/close no longer yields to a plain display
+// override on its content -- so this sets the real 'open' attribute, which always works.
+(() => {
+  let reopened = [];
+  addEventListener('beforeprint', () => {
+    reopened = [...document.querySelectorAll('.sysrow:not([open])')];
+    reopened.forEach(d => { d.open = true; });
+  });
+  addEventListener('afterprint', () => {
+    reopened.forEach(d => { d.open = false; });
+    reopened = [];
+  });
+})();
+
+(() => {
+  const t = document.getElementById('tickertrack');
+  if (!REDUCED) {
+    const clone = t.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    clone.id = '';
+    t.after(clone);
+    t.parentElement.style.display = 'flex';
+  }
+})();
+
+(() => {
+  if (REDUCED || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+})();
+
+(() => {
+  const cv = document.getElementById('tape');
+  const ctx = cv.getContext('2d');
+  const JOBS = [{"t":5.1,"label":"WA CLASS REMINDERS","sub":"MON-SAT","crm":false,"lvl":1},{"t":8.166,"label":"HEALTH CHECKER","sub":"DAILY","crm":false,"lvl":2},{"t":8.25,"label":"CSR CANARY","sub":"DAILY","crm":false,"lvl":3},{"t":9,"label":"REPORT SYNC","sub":"DAILY","crm":false,"lvl":1},{"t":12,"label":"AUDITOR","sub":"DAILY","crm":false,"lvl":2},{"t":0.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":4.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":8.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":12.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":16.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":20.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0}];
+  const ALWAYS_ON_LABEL = "COWORK-BOT · ALWAYS ON";
+  const DAY_SECONDS = 52;
+  const START_T = 4.4;
+  const LVL_H = [34, 62, 90, 118];
+
+  let W, H, dpr, padX, base, dots;
+  function size() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    padX = Math.max(34, W * 0.06);
+    base = H * 0.78;
+    dots = document.createElement('canvas');
+    dots.width = W * dpr; dots.height = H * dpr;
+    const d = dots.getContext('2d');
+    d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    d.fillStyle = 'rgba(169,196,255,0.055)';
+    const gap = 26;
+    for (let y = gap / 2; y < H; y += gap)
+      for (let x = gap / 2; x < W; x += gap)
+        d.fillRect(x, y, 1.4, 1.4);
+  }
+  const X = t => padX + (t / 24) * (W - 2 * padX);
+  const fmt = t => {
+    const h = Math.floor(t), m = Math.floor((t - h) * 60);
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  };
+
+  function draw(tCur, animated) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(dots, 0, 0, W, H);
+    const narrow = W < 720;
+    const doto = w => `${w} 11px Doto, monospace`;
+
+    ctx.strokeStyle = 'rgba(237,237,237,0.22)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padX, base); ctx.lineTo(W - padX, base); ctx.stroke();
+    ctx.textAlign = 'center';
+    for (let h = 0; h <= 24; h++) {
+      const x = X(h), major = h % 6 === 0;
+      ctx.fillStyle = major ? 'rgba(237,237,237,0.45)' : 'rgba(237,237,237,0.22)';
+      ctx.fillRect(x - 0.75, base - (major ? 7 : 4), 1.5, major ? 14 : 8);
+      if (major) { ctx.font = doto(600); ctx.fillText(String(h).padStart(2, '0'), x, base + 26); }
+    }
+
+    ctx.strokeStyle = 'rgba(169,196,255,0.30)';
+    ctx.setLineDash([2, 6]);
+    ctx.lineDashOffset = animated ? -(tCur * 40) : 0;
+    ctx.beginPath(); ctx.moveTo(padX, base + 44); ctx.lineTo(W - padX, base + 44); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(169,196,255,0.55)';
+    ctx.font = doto(600); ctx.textAlign = 'left';
+    ctx.fillText(ALWAYS_ON_LABEL, padX, base + 62);
+
+    let active = null;
+    for (const j of JOBS) {
+      const x = X(j.t), topY = base - LVL_H[j.lvl || 0];
+      let dist = tCur - j.t;
+      const near = animated && dist >= 0 && dist < 0.55;
+      if (near && (!active || j.t > active.t)) active = j;
+      const on = !animated || near;
+      ctx.strokeStyle = on ? 'rgba(237,237,237,0.75)' : 'rgba(237,237,237,0.20)';
+      ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x, topY); ctx.stroke();
+      ctx.fillStyle = on ? '#FFFFFF' : 'rgba(237,237,237,0.40)';
+      ctx.beginPath(); ctx.arc(x, topY, on ? 3.4 : 2.4, 0, 7); ctx.fill();
+      if (near) {
+        const p = dist / 0.55;
+        ctx.strokeStyle = `rgba(169,196,255,${(1 - p) * 0.85})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, topY, 4 + p * 30, 0, 7); ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+      if (!narrow && (!j.crm || j.t < 5)) {
+        ctx.fillStyle = on ? 'rgba(237,237,237,0.95)' : 'rgba(237,237,237,0.38)';
+        ctx.font = doto(on ? 700 : 600);
+        ctx.textAlign = 'left';
+        ctx.fillText(`${fmt(j.t)} ${j.label}`, x + 8, topY - 4);
+      }
+    }
+
+    if (animated) {
+      const x = X(tCur);
+      const g = ctx.createLinearGradient(0, base - 148, 0, base + 20);
+      g.addColorStop(0, 'rgba(169,196,255,0)');
+      g.addColorStop(0.65, 'rgba(169,196,255,0.75)');
+      g.addColorStop(1, 'rgba(255,255,255,0.9)');
+      ctx.strokeStyle = g; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x, base - 148); ctx.lineTo(x, base + 16); ctx.stroke();
+      ctx.lineWidth = 1;
+      ctx.fillStyle = 'rgba(237,237,237,0.9)';
+      ctx.font = doto(700); ctx.textAlign = x > W - 160 ? 'right' : 'left';
+      ctx.fillText(fmt(tCur) + ' WITA', x + (x > W - 160 ? -8 : 8), base - 136);
+    }
+  }
+
+  function start() {
+    size();
+    if (REDUCED) { draw(0, false); return; }
+    let t0 = performance.now();
+    (function frame(now) {
+      const el = (now - t0) / 1000;
+      draw((START_T + (el / DAY_SECONDS) * 24) % 24, true);
+      requestAnimationFrame(frame);
+    })(t0);
+  }
+  addEventListener('resize', () => { size(); if (REDUCED) draw(0, false); });
+  (document.fonts && document.fonts.ready || Promise.resolve()).then(start);
+})();
+</script>
+</body>
+</html>
